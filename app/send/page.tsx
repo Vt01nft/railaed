@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Check, Copy, ExternalLink, Loader2, Share2, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, Copy, ExternalLink, Loader2, Share2, Sparkles, Info } from 'lucide-react';
+import { AddressPill } from '@/components/address-pill';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input, Label, FieldHint } from '@/components/ui/input';
@@ -9,8 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { CorridorPicker } from '@/components/corridor-picker';
 import { HonestyScore } from '@/components/honesty-score';
 import { TxStateBadge } from '@/components/tx-state-badge';
-import { AddressPill } from '@/components/address-pill';
-import { CORRIDORS, type CorridorCode, DEFAULT_CORRIDOR } from '@/lib/corridors';
+import { COUNTRIES, type CorridorCode, DEFAULT_CORRIDOR } from '@/lib/corridors';
 import { formatAed, formatUsd } from '@/lib/usdc';
 
 interface QuoteResp {
@@ -53,6 +53,12 @@ interface TxResp {
   explorerUrl?: string | null;
 }
 
+interface CurrentUser {
+  email: string;
+  address: string;
+  balanceUsdc?: string;
+}
+
 export default function SendPage() {
   const [aed, setAed] = useState('500');
   const [corridor, setCorridor] = useState<CorridorCode>(DEFAULT_CORRIDOR);
@@ -66,8 +72,17 @@ export default function SendPage() {
   const [sendErr, setSendErr] = useState<string | null>(null);
   const [result, setResult] = useState<SendResp | null>(null);
   const [tx, setTx] = useState<TxResp | null>(null);
+  const [user, setUser] = useState<CurrentUser | null>(null);
 
   const aedNum = useMemo(() => Number(aed) || 0, [aed]);
+
+  // Pick up the signed-in user (if any) so we can show their wallet alongside the treasury.
+  useEffect(() => {
+    fetch('/api/user/me', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((j) => setUser(j.user ?? null))
+      .catch(() => setUser(null));
+  }, []);
 
   useEffect(() => {
     if (aedNum <= 0) {
@@ -180,12 +195,54 @@ export default function SendPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16">
-      <header className="text-center mb-10">
+      <header className="text-center mb-8">
         <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold-500)]">Send money</div>
         <h1 className="mt-2 font-serif text-4xl sm:text-5xl font-medium tracking-tight text-[color:var(--cream-200)]">
-          UAE → <span className="italic text-gold-bright">{CORRIDORS[corridor].country}</span>
+          UAE → <span className="italic text-gold-bright">{COUNTRIES[corridor].country}</span>
         </h1>
       </header>
+
+      {/* How money moves — explainer + sender-wallet awareness */}
+      <div className="mb-8 rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-5">
+        <div className="flex items-start gap-3">
+          <div className="size-9 rounded-2xl bg-[color:var(--gold-500)]/12 text-[color:var(--gold-300)] grid place-items-center border border-[color:var(--gold-500)]/30 shrink-0">
+            <Info className="size-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">
+              How money moves
+            </div>
+            <div className="mt-2 grid sm:grid-cols-3 gap-3 text-sm">
+              <FlowStep n={1} title={user ? 'Your Circle wallet' : 'Platform treasury'}>
+                {user ? (
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <AddressPill address={user.address} />
+                  </div>
+                ) : (
+                  <span className="text-[color:var(--cream-400)] text-xs">
+                    No sign-in yet · funds come from RailAED treasury for the demo
+                  </span>
+                )}
+              </FlowStep>
+              <FlowStep n={2} title="USDC on Arc">
+                <span className="text-[color:var(--cream-400)] text-xs">
+                  Sub-second finality · gas paid in USDC
+                </span>
+              </FlowStep>
+              <FlowStep n={3} title="Recipient wallet">
+                <span className="text-[color:var(--cream-400)] text-xs">
+                  Auto-provisioned · WhatsApp claim link
+                </span>
+              </FlowStep>
+            </div>
+            {!user ? (
+              <p className="mt-3 text-xs text-[color:var(--cream-500)] leading-relaxed">
+                Tip — tap <span className="text-[color:var(--cream-300)]">Sign in</span> in the header to provision a personal Circle wallet (no password, demo-grade). The send itself still settles from the platform treasury for this testnet demo.
+              </p>
+            ) : null}
+          </div>
+        </div>
+      </div>
 
       <div className="grid lg:grid-cols-[1.05fr_1fr] gap-6">
         <Card variant="gradient" className="p-1.5">
@@ -211,9 +268,9 @@ export default function SendPage() {
                 <div className="mt-2">
                   <CorridorPicker value={corridor} onChange={setCorridor} />
                 </div>
-                {CORRIDORS[corridor].expatPopulationInUae ? (
+                {COUNTRIES[corridor].expatPopulationInUae ? (
                   <FieldHint>
-                    {CORRIDORS[corridor].country} hosts ~{CORRIDORS[corridor].expatPopulationInUae} of the UAE&apos;s expat
+                    {COUNTRIES[corridor].country} hosts ~{COUNTRIES[corridor].expatPopulationInUae} of the UAE&apos;s expat
                     population — the largest UAE outbound corridor for many senders.
                   </FieldHint>
                 ) : null}
@@ -342,6 +399,20 @@ export default function SendPage() {
   );
 }
 
+function FlowStep({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface)]/40 p-3">
+      <div className="flex items-center gap-2">
+        <span className="size-5 grid place-items-center rounded-full bg-[color:var(--gold-500)]/15 border border-[color:var(--gold-500)]/40 text-[10px] font-semibold text-[color:var(--gold-300)]">
+          {n}
+        </span>
+        <span className="text-[color:var(--cream-200)] font-medium text-sm">{title}</span>
+      </div>
+      <div className="mt-1.5 pl-7">{children}</div>
+    </div>
+  );
+}
+
 function Row({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
     <div className="flex items-center justify-between gap-3">
@@ -394,7 +465,7 @@ function SuccessView({
                 {result.amountUsdc} <span className="text-[color:var(--gold-500)]">USDC</span>
               </h2>
               <p className="text-sm text-[color:var(--cream-400)] mt-1">
-                Locked on Arc for {CORRIDORS[corridor].flag} {CORRIDORS[corridor].country}.
+                Locked on Arc for {COUNTRIES[corridor].flag} {COUNTRIES[corridor].country}.
               </p>
             </div>
           </div>

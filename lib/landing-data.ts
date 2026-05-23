@@ -4,7 +4,7 @@ import { env } from './env';
 import { usdcToHuman } from './usdc';
 import { getAedToUsdRate } from './fx';
 import { listTransfers } from './state';
-import { CORRIDORS, type CorridorCode } from './corridors';
+import { COUNTRIES, type CorridorCode } from './corridors';
 
 export interface LandingData {
   ownerAddress: string;
@@ -38,7 +38,7 @@ export async function loadLanding(): Promise<LandingData> {
   let lastTransfer: LandingData['lastTransfer'] = null;
   if (last) {
     const code = (last.recipientCountry as CorridorCode) ?? 'IN';
-    const corridor = CORRIDORS[code];
+    const corridor = COUNTRIES[code];
     lastTransfer = {
       id: last.id,
       senderName: last.senderName,

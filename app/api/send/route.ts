@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { createWallet, transferUsdc } from '@/lib/circle';
 import { quoteRailAed } from '@/lib/fx';
-import { CORRIDORS, type CorridorCode } from '@/lib/corridors';
+import { COUNTRIES, isCorridorCode } from '@/lib/corridors';
 import { env } from '@/lib/env';
 import {
   encodeClaimToken,
@@ -20,7 +20,7 @@ const Body = z.object({
   senderAed: z.number().positive().max(1_000_000),
   recipientPhone: z.string().min(6).max(20),
   recipientName: z.string().min(1).max(80).optional(),
-  corridor: z.enum(Object.keys(CORRIDORS) as [CorridorCode, ...CorridorCode[]]),
+  corridor: z.string().refine(isCorridorCode, { message: 'unknown country code' }),
 });
 
 export async function POST(request: NextRequest) {
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     recipientWalletId: recipientWallet.id,
     amountUsdc,
     quote,
-    corridor: CORRIDORS[corridor],
+    corridor: COUNTRIES[corridor],
     recipientName: recipientName ?? null,
   });
 }

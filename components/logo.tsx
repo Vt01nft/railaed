@@ -4,6 +4,7 @@ interface LogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'mark' | 'lockup' | 'stacked';
   className?: string;
+  spin?: boolean;
 }
 
 const sizes = {
@@ -14,12 +15,12 @@ const sizes = {
   xl: { mark: 120, text: 'text-6xl', gap: 'gap-4' },
 } as const;
 
-export function Logo({ size = 'sm', variant = 'lockup', className = '' }: LogoProps) {
+export function Logo({ size = 'sm', variant = 'lockup', className = '', spin }: LogoProps) {
   const s = sizes[size];
   if (variant === 'stacked') {
     return (
       <div className={`inline-flex flex-col items-center ${className}`}>
-        <LogoMark size={s.mark} />
+        <LogoMark size={s.mark} spin={spin} />
         <div className={`mt-3 font-serif font-medium tracking-tight leading-none text-[color:var(--gold-300)] ${s.text}`}>
           RailAED
         </div>
@@ -31,7 +32,7 @@ export function Logo({ size = 'sm', variant = 'lockup', className = '' }: LogoPr
   }
   return (
     <div className={`inline-flex items-center ${s.gap} ${className}`}>
-      <LogoMark size={s.mark} />
+      <LogoMark size={s.mark} spin={spin} />
       {variant === 'lockup' ? (
         <span className={`font-serif font-medium tracking-tight leading-none text-[color:var(--gold-300)] ${s.text}`}>
           RailAED
@@ -41,7 +42,7 @@ export function Logo({ size = 'sm', variant = 'lockup', className = '' }: LogoPr
   );
 }
 
-export function LogoMark({ size = 32 }: { size?: number }) {
+export function LogoMark({ size = 32, spin = false }: { size?: number; spin?: boolean }) {
   return (
     <svg
       width={size}
@@ -50,6 +51,7 @@ export function LogoMark({ size = 32 }: { size?: number }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-label="RailAED"
       role="img"
+      className={spin ? 'animate-slow-spin' : undefined}
     >
       <defs>
         <radialGradient id="rl-bg" cx="50%" cy="40%" r="60%">

@@ -182,6 +182,19 @@ body {
 /* Selection */
 ::selection { background: rgba(240,195,77,0.30); color: var(--foreground); }
 
+/* Slow continuous rotation for the logo mark */
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.animate-slow-spin {
+  animation: slow-spin 24s linear infinite;
+  transform-origin: 50% 50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-slow-spin { animation: none; }
+}
+
 /* Faint film-grain texture for premium feel */
 .grain::after {
   content: '';

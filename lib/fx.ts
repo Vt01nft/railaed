@@ -8,7 +8,7 @@
  * always verifiable, but not live-quoted (which would require partner APIs).
  */
 
-import { CORRIDORS, type CorridorCode } from './corridors';
+import { COUNTRIES, type CorridorCode } from './corridors';
 
 const AED_USD_FALLBACK = 0.2723; // AED is pegged at 3.6725 / USD
 
@@ -67,7 +67,10 @@ const RAILAED_SETTLEMENT_SECONDS = 2;
 
 export async function quoteRailAed(senderAed: number, corridor: CorridorCode): Promise<RailAedQuote> {
   const { rate } = await getAedToUsdRate();
-  const corridorMeta = CORRIDORS[corridor];
+  const corridorMeta = COUNTRIES[corridor];
+  if (!corridorMeta) {
+    throw new Error(`Unknown corridor code: ${corridor}`);
+  }
   const baseUsd = senderAed * rate;
   const feeUsd = baseUsd * RAILAED_FEE_PCT;
   const recipientUsd = Math.max(0, baseUsd - feeUsd);

@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { getContractors, setContractors } from '@/lib/state';
-import { CORRIDORS, type CorridorCode } from '@/lib/corridors';
+import { isCorridorCode } from '@/lib/corridors';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -10,19 +10,19 @@ export const dynamic = 'force-dynamic';
 const ContractorRow = z.object({
   id: z.string().optional(),
   name: z.string().min(1).max(80),
-  country: z.enum(Object.keys(CORRIDORS) as [CorridorCode, ...CorridorCode[]]),
+  country: z.string().refine(isCorridorCode, { message: 'unknown country code' }),
   walletId: z.string().optional(),
   address: z.string().regex(/^0x[a-fA-F0-9]{40}$/).optional(),
   monthlyUsdc: z.string().regex(/^\d+(\.\d{1,6})?$/),
 });
 
-// Seeded with small testnet-friendly amounts. The UI shows these as monthly
-// salaries; in a production deploy you'd pull from your HR system. Increase
-// any time and re-fund the owner wallet via POST /api/seed/fund.
+// Seeded with small testnet-friendly amounts spread across the new corridor mix.
+// The UI shows these as monthly salaries; in production you'd pull from your HR
+// system. Top up the owner wallet via POST /api/seed/fund any time.
 const SEED_CONTRACTORS = [
   { name: 'Priya Nair',     country: 'IN' as const, monthlyUsdc: '0.5' },
-  { name: 'Juan Dela Cruz', country: 'PH' as const, monthlyUsdc: '0.3' },
-  { name: 'Hassan Raza',    country: 'PK' as const, monthlyUsdc: '0.4' },
+  { name: 'Maria Garcia',   country: 'ES' as const, monthlyUsdc: '0.4' },
+  { name: 'Chinedu Okeke',  country: 'NG' as const, monthlyUsdc: '0.3' },
 ];
 
 export async function GET() {

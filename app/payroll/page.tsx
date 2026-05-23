@@ -7,7 +7,7 @@ import { Input, Label } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { AddressPill } from '@/components/address-pill';
 import { TxStateBadge } from '@/components/tx-state-badge';
-import { CORRIDORS, CORRIDOR_LIST, type CorridorCode } from '@/lib/corridors';
+import { COUNTRIES, CORRIDOR_LIST, type CorridorCode } from '@/lib/corridors';
 import { formatUsd } from '@/lib/usdc';
 
 interface Contractor {
@@ -267,7 +267,7 @@ function RunReport({ run }: { run: PayrollRun }) {
                   <td className="px-2 py-3 text-[color:var(--cream-200)]">
                     {it.contractorName}{' '}
                     <span className="text-xs text-[color:var(--cream-500)]">
-                      {CORRIDORS[it.country as CorridorCode]?.flag}
+                      {COUNTRIES[it.country as CorridorCode]?.flag}
                     </span>
                   </td>
                   <td className="px-2 py-3">

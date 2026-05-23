@@ -22,7 +22,7 @@ export default async function Home() {
         </div>
 
         <div className="flex flex-col items-center text-center">
-          <Logo size="xl" variant="stacked" />
+          <Logo size="xl" variant="stacked" spin />
 
           <h1 className="mt-12 font-serif text-[2.75rem] sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.02] text-[color:var(--cream-200)] max-w-4xl">
             UAE to anywhere,<br />
@@ -147,25 +147,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-8 text-center">
-          <div className="text-[10px] uppercase tracking-[0.32em] text-[color:var(--gold-500)] mb-4">
-            Built on Circle + Arc
-          </div>
-          <div className="flex flex-wrap justify-center gap-2">
-            <TechPill highlight>USDC on Arc testnet</TechPill>
-            <TechPill highlight>Circle Developer-Controlled Wallets</TechPill>
-            <TechPill>Circle Gateway · treasury routing</TechPill>
-            <TechPill>CCTP V2 · Bridge Kit (v2)</TechPill>
-            <TechPill>Nanopayments · streaming payroll (v2)</TechPill>
-            <TechPill>StableFX · access requested</TechPill>
-            <TechPill>Next.js 16 · Vercel · viem</TechPill>
-          </div>
-          <p className="mt-4 text-xs text-[color:var(--cream-500)]">
-            Testnet demo · for educational purposes only · Stablecoin Commerce Stack Challenge · Track 1.
-          </p>
-        </div>
-      </section>
     </div>
   );
 }
@@ -214,16 +195,3 @@ function FeatureCard({ icon, title, body }: { icon: React.ReactNode; title: stri
   );
 }
 
-function TechPill({ children, highlight }: { children: React.ReactNode; highlight?: boolean }) {
-  return (
-    <span
-      className={`rounded-full border px-3 py-1 text-xs font-medium ${
-        highlight
-          ? 'border-[color:var(--border-strong)] bg-[color:var(--gold-500)]/[0.08] text-[color:var(--gold-300)]'
-          : 'border-[color:var(--border)] bg-transparent text-[color:var(--cream-300)]'
-      }`}
-    >
-      {children}
-    </span>
-  );
-}

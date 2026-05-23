@@ -1,14 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { z } from 'zod';
 import { quoteRailAed, honestyScore } from '@/lib/fx';
-import { CORRIDORS, type CorridorCode } from '@/lib/corridors';
+import { COUNTRIES, isCorridorCode } from '@/lib/corridors';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const Body = z.object({
   senderAed: z.number().positive().max(1_000_000),
-  corridor: z.enum(Object.keys(CORRIDORS) as [CorridorCode, ...CorridorCode[]]),
+  corridor: z.string().refine(isCorridorCode, { message: 'unknown country code' }),
 });
 
 export async function POST(request: NextRequest) {
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     quote,
     honestyScore: score,
-    corridor: CORRIDORS[corridor],
+    corridor: COUNTRIES[corridor],
     quotedAt: new Date().toISOString(),
   });
 }

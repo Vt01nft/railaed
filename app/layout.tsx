@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { SignInButton } from "@/components/sign-in-button";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -30,19 +31,21 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col brand-grad relative">
         <header className="absolute top-0 inset-x-0 z-30">
           <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-5">
-            {/* Left: project tag chip */}
-            <Link href="/" className="pill-outline">
-              <span className="text-[color:var(--cream-300)]">Stablecoin Remittance</span>
-            </Link>
+            {/* Left: logo (30% larger than xs, slow rotation) + tag pill */}
+            <div className="flex items-center gap-3">
+              <Link href="/" aria-label="RailAED home" className="flex items-center">
+                <Logo size="sm" variant="mark" spin />
+              </Link>
+              <Link href="/" className="pill-outline hidden sm:inline-flex">
+                <span className="text-[color:var(--cream-300)]">Stablecoin Remittance</span>
+              </Link>
+            </div>
 
-            {/* Right: meta chips + logo lockup, like the reference */}
+            {/* Right: nav + sign-in */}
             <div className="flex items-center gap-3">
               <NavChip href="/send">Send</NavChip>
               <NavChip href="/payroll">Payroll</NavChip>
-              <span className="pill-outline text-[color:var(--cream-400)] hidden sm:inline-flex">2026</span>
-              <Link href="/" className="ml-1">
-                <Logo size="xs" variant="mark" />
-              </Link>
+              <SignInButton />
             </div>
           </div>
         </header>

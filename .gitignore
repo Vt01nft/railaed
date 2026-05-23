@@ -43,3 +43,5 @@ next-env.d.ts
 # RailAED — local state (claim/payroll cache, regenerated at runtime)
 /.railaed-state.json
 /data/
+
+.vercel

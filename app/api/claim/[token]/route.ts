@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { decodeClaimToken } from '@/lib/claim-token';
 import { getTransfer, markClaimed } from '@/lib/state';
 import { getUsdcBalance } from '@/lib/arc';
-import { CORRIDORS, type CorridorCode } from '@/lib/corridors';
+import { COUNTRIES, type CorridorCode } from '@/lib/corridors';
 import { usdcToHuman } from '@/lib/usdc';
 
 export const runtime = 'nodejs';
@@ -20,7 +20,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ token: str
     const { payload, transfer } = await loadAndAuth(token);
     const onchainRaw = await getUsdcBalance(payload.recipientAddress as `0x${string}`);
     const onchainHuman = usdcToHuman(onchainRaw);
-    const corridor = CORRIDORS[(transfer?.recipientCountry as CorridorCode) ?? 'IN'];
+    const corridor = COUNTRIES[(transfer?.recipientCountry as CorridorCode) ?? 'IN'];
     return NextResponse.json({
       ok: true,
       payload,

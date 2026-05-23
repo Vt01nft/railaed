@@ -56,9 +56,18 @@ interface StateShape {
     address?: string;
     monthlyUsdc: string;
   }>;
+  users: Record<
+    string,
+    {
+      email: string;
+      walletId: string;
+      address: string;
+      createdAt: string;
+    }
+  >;
 }
 
-const EMPTY: StateShape = { transfers: {}, payrollRuns: {}, contractors: [] };
+const EMPTY: StateShape = { transfers: {}, payrollRuns: {}, contractors: [], users: {} };
 
 let inMemory: StateShape | null = null;
 
@@ -71,6 +80,7 @@ async function load(): Promise<StateShape> {
     inMemory.transfers ??= {};
     inMemory.payrollRuns ??= {};
     inMemory.contractors ??= [];
+    inMemory.users ??= {};
     return inMemory;
   } catch (err: unknown) {
     if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -135,6 +145,17 @@ export async function getContractors() {
 export async function setContractors(rows: StateShape['contractors']) {
   const s = await load();
   s.contractors = rows;
+  await persist(s);
+}
+
+export async function getUserByEmail(email: string) {
+  const s = await load();
+  return s.users[email.toLowerCase()];
+}
+
+export async function setUser(u: StateShape['users'][string]) {
+  const s = await load();
+  s.users[u.email.toLowerCase()] = u;
   await persist(s);
 }
 
