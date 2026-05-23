@@ -189,7 +189,7 @@ export default function ClaimPage({ params }: { params: Promise<{ token: string 
               </div>
               <p className="mt-1.5 text-sm text-[color:var(--cream-400)]">
                 In production this hands off to a local off-ramp partner (
-                {corridor?.country} → {corridor?.localCurrency}). For the testnet demo, your USDC sits in your Arc wallet — verifiably yours.
+                {corridor?.country} → {corridor?.localCurrency}). For the testnet demo, your USDC sits in your Arc wallet, verifiably yours.
               </p>
               {!accepted ? (
                 <Button className="mt-4" variant="gold" onClick={accept} loading={accepting}>

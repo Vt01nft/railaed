@@ -184,7 +184,7 @@ export default function PayrollPage() {
                         {c.address ? (
                           <AddressPill address={c.address} />
                         ) : (
-                          <span className="text-xs text-[color:var(--cream-500)]">— provisions on first run —</span>
+                          <span className="text-xs text-[color:var(--cream-500)]">provisions on first run</span>
                         )}
                       </td>
                       <td className="px-2 py-2 text-right">

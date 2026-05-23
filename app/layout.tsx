@@ -15,7 +15,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "RailAED — UAE → Anywhere · USDC on Arc",
+  title: "RailAED · UAE → Anywhere · USDC on Arc",
   description:
     "Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds. Built for the Stablecoin Commerce Stack Challenge.",
 };

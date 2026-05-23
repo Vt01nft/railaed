@@ -76,8 +76,8 @@ export function LogoMark({ size = 32, spin = false }: { size?: number; spin?: bo
         </linearGradient>
       </defs>
 
-      {/* Six organic facets clustered in a circle — a "cut-emerald" mosaic.
-          One facet is gold to nod at AED. */}
+      {/* Six organic facets clustered in a circle (a "cut-emerald" mosaic),
+          plus one gold facet as an AED nod. */}
       <circle cx="32" cy="32" r="28" fill="url(#rl-bg)" />
 
       {/* top-left */}
@@ -95,7 +95,7 @@ export function LogoMark({ size = 32, spin = false }: { size?: number; spin?: bo
         d="M47 24 L54 30 Q55 37 50 41 L42 33 Q42 27 47 24 Z"
         fill="url(#rl-deep)"
       />
-      {/* center (mint accent — the brightest, like the highlighted gem) */}
+      {/* center (mint accent, the brightest, like the highlighted gem) */}
       <path
         d="M22 21 L33 21 L40 29 L34 39 L22 36 Q17 28 22 21 Z"
         fill="url(#rl-mint)"

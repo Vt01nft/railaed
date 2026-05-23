@@ -89,7 +89,7 @@ export function HonestyScore({
                 </td>
                 <td className="px-4 py-3 text-right">
                   {r.isUs ? (
-                    <span className="text-[color:var(--cream-500)]">—</span>
+                    <span className="text-[color:var(--cream-500)]">·</span>
                   ) : delta < 0 ? (
                     <span className="inline-flex items-center gap-0.5 text-[color:var(--danger)] font-mono text-xs">
                       <ArrowDown className="size-3.5" />

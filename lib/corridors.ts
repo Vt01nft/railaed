@@ -85,6 +85,23 @@ export const COUNTRIES: Record<string, Country> = {
 
 export type CorridorCode = keyof typeof COUNTRIES;
 
+/** ITU-T E.164 dial codes for every supported country. */
+export const DIAL_CODES: Record<string, string> = {
+  US: '+1',   UK: '+44',  CA: '+1',   IN: '+91',  NG: '+234', SG: '+65',  ES: '+34',  DE: '+49',
+  AE: '+971', AR: '+54',  AT: '+43',  AU: '+61',  BD: '+880', BE: '+32',  BH: '+973', BR: '+55',
+  CH: '+41',  CL: '+56',  CN: '+86',  CO: '+57',  DK: '+45',  EG: '+20',  FR: '+33',  GH: '+233',
+  GR: '+30',  HK: '+852', ID: '+62',  IE: '+353', IL: '+972', IT: '+39',  JO: '+962', JP: '+81',
+  KE: '+254', KR: '+82',  KW: '+965', LK: '+94',  MA: '+212', MX: '+52',  MY: '+60',  NL: '+31',
+  NO: '+47',  NP: '+977', NZ: '+64',  OM: '+968', PE: '+51',  PH: '+63',  PK: '+92',  PL: '+48',
+  PT: '+351', QA: '+974', SA: '+966', SE: '+46',  TH: '+66',  TR: '+90',  TW: '+886', VN: '+84',
+  ZA: '+27',
+};
+
+/** Returns the dial code for a country code (defaults to '+' if unknown). */
+export function dialCodeFor(code: string): string {
+  return DIAL_CODES[code] ?? '+';
+}
+
 /** Featured corridors only — rendered as picker tiles in this exact order. */
 export const CORRIDOR_LIST: Country[] = ['US', 'UK', 'CA', 'IN', 'NG', 'SG', 'ES', 'DE'].map(
   (k) => COUNTRIES[k]!

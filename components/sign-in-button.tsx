@@ -96,7 +96,7 @@ export function SignInButton() {
             </h2>
             <p className="mt-2 text-sm text-[color:var(--cream-400)] leading-relaxed">
               Enter any email and we&apos;ll provision a Developer-Controlled Wallet on Arc for you instantly.
-              No password, no seed phrase — passkey-authenticated Modular Wallets are the planned v2.
+              No password, no seed phrase. Passkey-authenticated Modular Wallets are the planned v2.
             </p>
 
             <form onSubmit={submit} className="mt-5 space-y-3">
@@ -129,7 +129,7 @@ export function SignInButton() {
               </div>
               For this testnet demo, sends are funded from the RailAED treasury wallet on Arc.
               Your personal wallet starts at 0 USDC and would normally be topped up from your bank
-              or card via Circle&apos;s on-ramp — out of scope for the hackathon. Production would use
+              or card via Circle&apos;s on-ramp, out of scope for the hackathon. Production would use
               passkey-authenticated Circle Modular Wallets per sender.
             </div>
           </div>

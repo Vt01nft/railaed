@@ -14,9 +14,9 @@ export default async function Home() {
 
   return (
     <div className="relative">
-      {/* Hero — centred "logotype" composition à la Smaragd */}
+      {/* Hero. Centred "logotype" composition à la Smaragd */}
       <section className="relative mx-auto max-w-6xl px-6 pt-12 pb-24 lg:pt-20 lg:pb-32">
-        {/* Scallop badge — only on lg+, kept far enough from the centre to avoid clipping */}
+        {/* Scallop badge: only on lg+, kept far enough from the centre to avoid clipping */}
         <div className="absolute left-8 top-32 text-[color:var(--gold-500)]/80 hidden lg:block">
           <ScallopBadge text={'MADE\nON ARC'} size={108} />
         </div>
@@ -31,7 +31,7 @@ export default async function Home() {
           <p className="mt-6 text-lg text-[color:var(--cream-400)] max-w-2xl leading-relaxed">
             Pay in AED. Settle in USDC. Deliver to the seven biggest UAE-expat corridors with a live
             <span className="text-[color:var(--cream-200)]"> honesty score </span>
-            beside every quote — Al Ansari, Wise, Western Union, Remitly.
+            beside every quote. Al Ansari, Wise, Western Union, Remitly.
           </p>
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -55,7 +55,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Wallet card + features — now wired to live data */}
+      {/* Wallet card + features, now wired to live data */}
       <section className="mx-auto max-w-6xl px-6 pb-20 grid lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
         <Card variant="gradient" className="p-1.5">
           <div className="rounded-[1.4rem] bg-[color:var(--surface)]/90 p-7 h-full">
@@ -121,7 +121,7 @@ export default async function Home() {
                 </div>
               ) : (
                 <div className="mt-2 text-xs text-[color:var(--cream-500)]">
-                  No transfers yet — head to <Link className="text-[color:var(--gold-300)] hover:underline" href="/send">Send</Link> and the next one shows up here.
+                  No transfers yet. Head to <Link className="text-[color:var(--gold-300)] hover:underline" href="/send">Send</Link> and the next one shows up here.
                 </div>
               )}
             </div>
@@ -142,7 +142,7 @@ export default async function Home() {
           <FeatureCard
             icon={<ShieldCheck className="size-5" />}
             title="Honesty score, always on"
-            body="A live side-by-side against Al Ansari, LuLu, Wise, Remitly, Western Union — recipient amounts in dollars and dirhams, no hidden FX margin."
+            body="A live side-by-side against Al Ansari, LuLu, Wise, Remitly, Western Union. Recipient amounts in dollars and dirhams, no hidden FX margin."
           />
         </div>
       </section>

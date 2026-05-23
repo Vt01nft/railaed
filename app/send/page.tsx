@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { CorridorPicker } from '@/components/corridor-picker';
 import { HonestyScore } from '@/components/honesty-score';
 import { TxStateBadge } from '@/components/tx-state-badge';
-import { COUNTRIES, type CorridorCode, DEFAULT_CORRIDOR } from '@/lib/corridors';
+import { COUNTRIES, dialCodeFor, type CorridorCode, DEFAULT_CORRIDOR } from '@/lib/corridors';
 import { formatAed, formatUsd } from '@/lib/usdc';
 
 interface QuoteResp {
@@ -64,7 +64,7 @@ export default function SendPage() {
   const [corridor, setCorridor] = useState<CorridorCode>(DEFAULT_CORRIDOR);
   const [senderName, setSenderName] = useState('Ahmed (Dubai)');
   const [recipientName, setRecipientName] = useState('');
-  const [recipientPhone, setRecipientPhone] = useState('+91');
+  const [recipientPhone, setRecipientPhone] = useState(dialCodeFor(DEFAULT_CORRIDOR));
   const [quote, setQuote] = useState<QuoteResp | null>(null);
   const [quoting, setQuoting] = useState(false);
   const [quoteErr, setQuoteErr] = useState<string | null>(null);
@@ -83,6 +83,21 @@ export default function SendPage() {
       .then((j) => setUser(j.user ?? null))
       .catch(() => setUser(null));
   }, []);
+
+  // Auto-rewrite the dial code when the corridor changes — but only if the
+  // user hasn't already typed past the previous code (so we don't wipe their
+  // input mid-edit).
+  useEffect(() => {
+    const newCode = dialCodeFor(corridor);
+    setRecipientPhone((prev) => {
+      // Find a known dial-code prefix in the current value; if everything
+      // after the old prefix is just whitespace, replace; otherwise leave alone.
+      const matched = prev.match(/^\+\d{1,4}/)?.[0] ?? '';
+      const rest = prev.slice(matched.length).trim();
+      if (!rest) return newCode;
+      return prev; // user has typed digits past the prefix; respect that
+    });
+  }, [corridor]);
 
   useEffect(() => {
     if (aedNum <= 0) {
@@ -202,7 +217,7 @@ export default function SendPage() {
         </h1>
       </header>
 
-      {/* How money moves — explainer + sender-wallet awareness */}
+      {/* How money moves: explainer + sender-wallet awareness */}
       <div className="mb-8 rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-5">
         <div className="flex items-start gap-3">
           <div className="size-9 rounded-2xl bg-[color:var(--gold-500)]/12 text-[color:var(--gold-300)] grid place-items-center border border-[color:var(--gold-500)]/30 shrink-0">
@@ -237,7 +252,7 @@ export default function SendPage() {
             </div>
             {!user ? (
               <p className="mt-3 text-xs text-[color:var(--cream-500)] leading-relaxed">
-                Tip — tap <span className="text-[color:var(--cream-300)]">Sign in</span> in the header to provision a personal Circle wallet (no password, demo-grade). The send itself still settles from the platform treasury for this testnet demo.
+                Tip: tap <span className="text-[color:var(--cream-300)]">Sign in</span> in the header to provision a personal Circle wallet (no password, demo-grade). The send itself still settles from the platform treasury for this testnet demo.
               </p>
             ) : null}
           </div>
@@ -271,7 +286,7 @@ export default function SendPage() {
                 {COUNTRIES[corridor].expatPopulationInUae ? (
                   <FieldHint>
                     {COUNTRIES[corridor].country} hosts ~{COUNTRIES[corridor].expatPopulationInUae} of the UAE&apos;s expat
-                    population — the largest UAE outbound corridor for many senders.
+                    population, the largest UAE outbound corridor for many senders.
                   </FieldHint>
                 ) : null}
               </div>
@@ -300,7 +315,7 @@ export default function SendPage() {
                   className="mt-2 font-mono"
                   value={recipientPhone}
                   onChange={(e) => setRecipientPhone(e.target.value)}
-                  placeholder="+91 98xxxxxxxx"
+                  placeholder={`${dialCodeFor(corridor)} 98xxxxxxxx`}
                 />
                 <FieldHint>Addresses the share link (WhatsApp / SMS). Not transmitted on-chain.</FieldHint>
               </div>
