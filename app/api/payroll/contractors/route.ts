@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { getContractors, setContractors } from '@/lib/state';
 import { isCorridorCode } from '@/lib/corridors';
+import { buildSeedContractors } from '@/lib/payroll-seed';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,20 +17,11 @@ const ContractorRow = z.object({
   monthlyUsdc: z.string().regex(/^\d+(\.\d{1,6})?$/),
 });
 
-// Seeded with small testnet-friendly amounts spread across the new corridor mix.
-// The UI shows these as monthly salaries; in production you'd pull from your HR
-// system. Top up the owner wallet via POST /api/seed/fund any time.
-const SEED_CONTRACTORS = [
-  { name: 'Priya Nair',     country: 'IN' as const, monthlyUsdc: '0.5' },
-  { name: 'Maria Garcia',   country: 'ES' as const, monthlyUsdc: '0.4' },
-  { name: 'Chinedu Okeke',  country: 'NG' as const, monthlyUsdc: '0.3' },
-];
-
 export async function GET() {
   const rows = await getContractors();
   if (rows.length === 0) {
-    const seeded = SEED_CONTRACTORS.map((r) => ({ id: randomUUID(), ...r }));
-    await setContractors(seeded);
+    const seeded = buildSeedContractors();
+    await setContractors(seeded).catch(() => { /* read-only fs; ignore */ });
     return NextResponse.json({ contractors: seeded });
   }
   return NextResponse.json({ contractors: rows });
@@ -42,6 +34,6 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ error: 'invalid body', issues: parsed.error.issues }, { status: 400 });
   }
   const rows = parsed.data.map((r) => ({ id: r.id ?? randomUUID(), ...r }));
-  await setContractors(rows);
+  await setContractors(rows).catch(() => { /* read-only fs; ignore */ });
   return NextResponse.json({ contractors: rows });
 }

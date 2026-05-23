@@ -163,9 +163,25 @@ export default function SendPage() {
           corridor,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'send failed');
-      setResult(data as SendResp);
+      // Be defensive: if the server returns HTML (e.g. an unhandled 500),
+      // .json() throws "Unexpected end of JSON input". Read as text first,
+      // then attempt to parse, so we can show the user something useful.
+      const raw = await res.text();
+      let data: { error?: string; hint?: string } & Record<string, unknown> = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        throw new Error(
+          res.ok
+            ? 'send succeeded but response was malformed'
+            : `send failed (HTTP ${res.status}). ${raw.slice(0, 140)}`.trim()
+        );
+      }
+      if (!res.ok) {
+        const detail = data.error ?? `send failed (HTTP ${res.status})`;
+        throw new Error(data.hint ? `${detail} — ${data.hint}` : detail);
+      }
+      setResult(data as unknown as SendResp);
     } catch (err) {
       setSendErr(err instanceof Error ? err.message : 'send failed');
     } finally {
