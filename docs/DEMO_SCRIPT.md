@@ -1,19 +1,22 @@
 # RailAED — 2-minute demo script
 
+Live demo: **https://railaed-promptforge.vercel.app**
+
 This is the script for the submission video. It's tight on purpose — judges watch
 dozens of these and you want every second to land.
 
 ## Setup before recording
 
-1. `npm run dev`
-2. `curl http://localhost:3000/api/health` — owner USDC balance should be > 2.
-   If not: `curl -X POST http://localhost:3000/api/seed/fund -d '{"amount":"5"}' -H "content-type: application/json"`
-3. `rm -f .railaed-state.json` to get the seed contractors back to defaults.
-4. Open three browser tabs:
-   - `http://localhost:3000/` (landing)
-   - `http://localhost:3000/send` (sender flow)
-   - `http://localhost:3000/payroll` (employer flow)
-5. Open the Arc explorer in a fourth tab: `https://testnet.arcscan.app`
+1. Hit `https://railaed-promptforge.vercel.app/api/health` — owner USDC balance should be > 2.
+   If not: `curl -X POST https://railaed-promptforge.vercel.app/api/seed/fund -d '{"amount":"5"}' -H "content-type: application/json"`
+2. (Local only) `rm -f .railaed-state.json` to get the seed contractors back to defaults.
+   On the live deploy the state file is read/written under the function's
+   temp dir and resets between invocations — that's fine for the demo.
+3. Open three browser tabs:
+   - `https://railaed-promptforge.vercel.app/` (landing)
+   - `https://railaed-promptforge.vercel.app/send` (sender flow)
+   - `https://railaed-promptforge.vercel.app/payroll` (employer flow)
+4. Open the Arc explorer in a fourth tab: `https://testnet.arcscan.app`
    (so you can paste in the tx hash at the end).
 
 ---

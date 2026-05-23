@@ -6,6 +6,8 @@
 
 Built for the **[Stablecoin Commerce Stack Challenge](https://challenges.ignyte.ae/competition/4B436318-C737-F111-9A49-6045BD14D400)** by Ignyte, with Circle and Arc as technical sponsors.
 
+- **Live demo:** [railaed-promptforge.vercel.app](https://railaed-promptforge.vercel.app)
+- **Source:** [github.com/Vt01nft/railaed](https://github.com/Vt01nft/railaed)
 - **Track:** Track 1 — Best Cross-Border Payments & Remittances Experience (UAE → Global)
 - **Circle Developer Account:** `vt01nfts@gmail.com`
 - **Circle products used:** USDC on Arc · Circle Developer-Controlled Wallets · CCTP V2 + Bridge Kit (planned for v2) · Circle Gateway (treasury routing) · Nanopayments (streaming payroll, planned for v2) · StableFX (interface shimmed, access requested)
