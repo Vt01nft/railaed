@@ -53,12 +53,6 @@ interface TxResp {
   explorerUrl?: string | null;
 }
 
-interface CurrentUser {
-  email: string;
-  address: string;
-  balanceUsdc?: string;
-}
-
 export default function SendPage() {
   const [aed, setAed] = useState('500');
   const [corridor, setCorridor] = useState<CorridorCode>(DEFAULT_CORRIDOR);
@@ -72,19 +66,10 @@ export default function SendPage() {
   const [sendErr, setSendErr] = useState<string | null>(null);
   const [result, setResult] = useState<SendResp | null>(null);
   const [tx, setTx] = useState<TxResp | null>(null);
-  const [user, setUser] = useState<CurrentUser | null>(null);
 
   const aedNum = useMemo(() => Number(aed) || 0, [aed]);
 
-  // Pick up the signed-in user (if any) so we can show their wallet alongside the treasury.
-  useEffect(() => {
-    fetch('/api/user/me', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((j) => setUser(j.user ?? null))
-      .catch(() => setUser(null));
-  }, []);
-
-  // Auto-rewrite the dial code when the corridor changes — but only if the
+  // Auto-rewrite the dial code when the corridor changes, but only if the
   // user hasn't already typed past the previous code (so we don't wipe their
   // input mid-edit).
   useEffect(() => {
@@ -217,7 +202,7 @@ export default function SendPage() {
         </h1>
       </header>
 
-      {/* How money moves: explainer + sender-wallet awareness */}
+      {/* How money moves: explainer */}
       <div className="mb-8 rounded-3xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-5">
         <div className="flex items-start gap-3">
           <div className="size-9 rounded-2xl bg-[color:var(--gold-500)]/12 text-[color:var(--gold-300)] grid place-items-center border border-[color:var(--gold-500)]/30 shrink-0">
@@ -228,16 +213,10 @@ export default function SendPage() {
               How money moves
             </div>
             <div className="mt-2 grid sm:grid-cols-3 gap-3 text-sm">
-              <FlowStep n={1} title={user ? 'Your Circle wallet' : 'Platform treasury'}>
-                {user ? (
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <AddressPill address={user.address} />
-                  </div>
-                ) : (
-                  <span className="text-[color:var(--cream-400)] text-xs">
-                    No sign-in yet · funds come from RailAED treasury for the demo
-                  </span>
-                )}
+              <FlowStep n={1} title="RailAED treasury">
+                <span className="text-[color:var(--cream-400)] text-xs">
+                  Circle Developer-Controlled Wallet · pre-funded for the demo
+                </span>
               </FlowStep>
               <FlowStep n={2} title="USDC on Arc">
                 <span className="text-[color:var(--cream-400)] text-xs">
@@ -246,15 +225,16 @@ export default function SendPage() {
               </FlowStep>
               <FlowStep n={3} title="Recipient wallet">
                 <span className="text-[color:var(--cream-400)] text-xs">
-                  Auto-provisioned · WhatsApp claim link
+                  Auto-provisioned per send · WhatsApp claim link
                 </span>
               </FlowStep>
             </div>
-            {!user ? (
-              <p className="mt-3 text-xs text-[color:var(--cream-500)] leading-relaxed">
-                Tip: tap <span className="text-[color:var(--cream-300)]">Sign in</span> in the header to provision a personal Circle wallet (no password, demo-grade). The send itself still settles from the platform treasury for this testnet demo.
-              </p>
-            ) : null}
+            <p className="mt-3 text-xs text-[color:var(--cream-500)] leading-relaxed">
+              For this testnet demo, the platform funds every send from its treasury. Production
+              would authenticate each sender via Circle Modular Wallets (passkey or social login),
+              top up their wallet from a card or bank via Circle&apos;s on-ramp, and sign transfers
+              from their own keys.
+            </p>
           </div>
         </div>
       </div>
