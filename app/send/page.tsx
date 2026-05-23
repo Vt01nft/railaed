@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { CorridorPicker } from '@/components/corridor-picker';
 import { HonestyScore } from '@/components/honesty-score';
 import { TxStateBadge } from '@/components/tx-state-badge';
+import { HistoryList } from '@/components/history-list';
 import { COUNTRIES, dialCodeFor, type CorridorCode, DEFAULT_CORRIDOR } from '@/lib/corridors';
 import { formatAed, formatUsd } from '@/lib/usdc';
 
@@ -404,6 +405,16 @@ export default function SendPage() {
               </CardContent>
             </Card>
           ) : null}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Your recent sends</CardTitle>
+              <CardDescription>Pulled live from Circle. Click ArcScan to verify on-chain.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <HistoryList limit={6} kind="transfer" compact autoRefreshSeconds={15} />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

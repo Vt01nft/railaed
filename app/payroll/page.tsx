@@ -233,7 +233,74 @@ export default function PayrollPage() {
   );
 }
 
+interface LiveTx {
+  state: string;
+  txHash: string | null;
+  explorerUrl: string | null;
+}
+
+function useTxStatuses(circleTxIds: string[]) {
+  const [statuses, setStatuses] = useState<Record<string, LiveTx>>({});
+
+  useEffect(() => {
+    const pending = circleTxIds.filter((id) => !!id);
+    if (pending.length === 0) return;
+
+    let cancelled = false;
+    let attempts = 0;
+
+    async function poll() {
+      if (cancelled) return;
+      attempts++;
+      await Promise.all(
+        pending.map(async (id) => {
+          // Stop polling rows that have already terminal-resolved
+          const known = statuses[id];
+          if (known && (known.state === 'COMPLETE' || known.state === 'CONFIRMED' || known.state === 'FAILED' || known.state === 'CANCELLED' || known.state === 'DENIED')) {
+            return;
+          }
+          try {
+            const res = await fetch(`/api/tx/${id}`);
+            const data = await res.json();
+            if (data.ok) {
+              setStatuses((prev) => ({
+                ...prev,
+                [id]: {
+                  state: data.state ?? 'INITIATED',
+                  txHash: data.txHash ?? null,
+                  explorerUrl: data.explorerUrl ?? null,
+                },
+              }));
+            }
+          } catch {
+            /* one bad poll, try again */
+          }
+        })
+      );
+    }
+
+    poll();
+    const interval = setInterval(() => {
+      if (attempts > 30) {
+        clearInterval(interval);
+        return;
+      }
+      poll();
+    }, 2500);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [circleTxIds.join('|')]);
+
+  return statuses;
+}
+
 function RunReport({ run }: { run: PayrollRun }) {
+  const live = useTxStatuses(run.items.map((i) => i.circleTxId).filter(Boolean));
+
   return (
     <Card variant="gradient" className="p-1.5">
       <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-7">
@@ -262,40 +329,55 @@ function RunReport({ run }: { run: PayrollRun }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-[color:var(--border)]">
-              {run.items.map((it, i) => (
-                <tr key={i}>
-                  <td className="px-2 py-3 text-[color:var(--cream-200)]">
-                    {it.contractorName}{' '}
-                    <span className="text-xs text-[color:var(--cream-500)]">
-                      {COUNTRIES[it.country as CorridorCode]?.flag}
-                    </span>
-                  </td>
-                  <td className="px-2 py-3">
-                    <AddressPill address={it.address} />
-                  </td>
-                  <td className="px-2 py-3 text-right font-mono text-[color:var(--cream-200)]">
-                    {it.amountUsdc} USDC
-                  </td>
-                  <td className="px-2 py-3">
-                    <div className="flex items-center gap-2">
-                      <TxStateBadge state={it.state} />
-                      {it.circleTxId ? (
-                        <a
-                          className="text-xs text-[color:var(--cream-500)] hover:text-[color:var(--gold-300)] inline-flex items-center gap-1"
-                          href={`/api/tx/${it.circleTxId}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          tx <ExternalLink className="size-3" />
-                        </a>
+              {run.items.map((it, i) => {
+                const liveStatus = live[it.circleTxId];
+                const state = liveStatus?.state ?? it.state;
+                const recipientExplorer = `https://testnet.arcscan.app/address/${it.address}`;
+                const txExplorer = liveStatus?.explorerUrl ?? null;
+                return (
+                  <tr key={i}>
+                    <td className="px-2 py-3 text-[color:var(--cream-200)]">
+                      {it.contractorName}{' '}
+                      <span className="text-xs text-[color:var(--cream-500)]">
+                        {COUNTRIES[it.country as CorridorCode]?.flag}
+                      </span>
+                    </td>
+                    <td className="px-2 py-3">
+                      <AddressPill address={it.address} />
+                    </td>
+                    <td className="px-2 py-3 text-right font-mono text-[color:var(--cream-200)]">
+                      {it.amountUsdc} USDC
+                    </td>
+                    <td className="px-2 py-3">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <TxStateBadge state={state} />
+                        {txExplorer ? (
+                          <a
+                            className="text-xs text-[color:var(--gold-300)] hover:underline inline-flex items-center gap-1"
+                            href={txExplorer}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            ArcScan tx <ExternalLink className="size-3" />
+                          </a>
+                        ) : it.circleTxId ? (
+                          <a
+                            className="text-xs text-[color:var(--cream-500)] hover:text-[color:var(--gold-300)] inline-flex items-center gap-1"
+                            href={recipientExplorer}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            view recipient <ExternalLink className="size-3" />
+                          </a>
+                        ) : null}
+                      </div>
+                      {it.error ? (
+                        <div className="text-xs text-[color:var(--danger)] mt-1">{it.error}</div>
                       ) : null}
-                    </div>
-                    {it.error ? (
-                      <div className="text-xs text-[color:var(--danger)] mt-1">{it.error}</div>
-                    ) : null}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -99,6 +99,53 @@ export async function getTransaction(transactionId: string) {
   return res.data?.transaction;
 }
 
+export interface OwnerTransaction {
+  id: string;
+  txHash: string | null;
+  state: string;
+  amount: string;
+  destinationAddress: string;
+  sourceAddress: string;
+  refId?: string;
+  createDate: string;
+  updateDate: string;
+  /** Best-effort label parsed from refId — "transfer" or "payroll" or null. */
+  kind: 'transfer' | 'payroll' | 'other';
+}
+
+/**
+ * Lists transactions owned by the platform's owner wallet, newest first.
+ * Used by the History feature so we don't have to maintain a separate database;
+ * Circle's API is the system of record.
+ */
+export async function listOwnerTransactions(limit = 25): Promise<OwnerTransaction[]> {
+  const res = await circle().listTransactions({
+    walletIds: [env.circle.ownerWalletId],
+    pageSize: limit,
+  });
+  const rows = res.data?.transactions ?? [];
+  return rows.map((t): OwnerTransaction => {
+    const refId = t.refId ?? undefined;
+    const amount = Array.isArray(t.amounts) ? (t.amounts[0] ?? '0') : '0';
+    return {
+      id: t.id,
+      txHash: t.txHash ?? null,
+      state: t.state ?? 'INITIATED',
+      amount,
+      destinationAddress: (t.destinationAddress ?? '').toLowerCase(),
+      sourceAddress: (t.sourceAddress ?? '').toLowerCase(),
+      refId,
+      createDate: t.createDate ?? '',
+      updateDate: t.updateDate ?? '',
+      kind: refId?.startsWith('railaed:payroll:')
+        ? 'payroll'
+        : refId?.startsWith('railaed:transfer:')
+          ? 'transfer'
+          : 'other',
+    };
+  });
+}
+
 /** Request testnet USDC from Circle's faucet for an Arc testnet address. */
 export async function faucetUsdc(address: string): Promise<{ status: number }> {
   const res = await circle().requestTestnetTokens({

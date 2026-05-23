@@ -1,10 +1,11 @@
 import Link from 'next/link';
-import { ArrowRight, Users, Globe2, ShieldCheck, RefreshCw } from 'lucide-react';
+import { ArrowRight, Users, Globe2, ShieldCheck } from 'lucide-react';
 import { Logo, ScallopBadge } from '@/components/logo';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AddressPill } from '@/components/address-pill';
-import { loadLanding, humanAgo } from '@/lib/landing-data';
+import { HistoryList } from '@/components/history-list';
+import { loadLanding } from '@/lib/landing-data';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -93,37 +94,16 @@ export default async function Home() {
               <ActionTile href="/api/health" label="Audit" external />
             </div>
 
-            <div className="mt-6 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-4">
-              <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.18em] text-[color:var(--cream-500)]">
-                <span>Last settled</span>
-                {data.lastTransfer ? (
-                  <span className="font-mono text-[color:var(--mint-300)]">
-                    {humanAgo(data.lastTransfer.agoSeconds)} ago
-                  </span>
-                ) : (
-                  <span className="font-mono text-[color:var(--cream-500)] inline-flex items-center gap-1">
-                    <RefreshCw className="size-3" /> awaiting first send
-                  </span>
-                )}
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">
+                  Recent activity
+                </div>
+                <Link href="/send" className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-300)] hover:underline">
+                  + new send
+                </Link>
               </div>
-              {data.lastTransfer ? (
-                <div className="mt-2 flex items-center justify-between">
-                  <div>
-                    <div className="text-[color:var(--cream-200)] font-medium">
-                      Send → {data.lastTransfer.recipientFlag} from {data.lastTransfer.senderName}
-                    </div>
-                    <AddressPill address={data.lastTransfer.recipientAddress} />
-                  </div>
-                  <div className="font-mono text-[color:var(--cream-200)] text-right">
-                    <span className="text-lg">{data.lastTransfer.amountUsdcDisplay}</span>{' '}
-                    <span className="text-[color:var(--gold-500)] text-xs">USDC</span>
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-2 text-xs text-[color:var(--cream-500)]">
-                  No transfers yet. Head to <Link className="text-[color:var(--gold-300)] hover:underline" href="/send">Send</Link> and the next one shows up here.
-                </div>
-              )}
+              <HistoryList limit={5} kind="all" compact autoRefreshSeconds={20} />
             </div>
           </div>
         </Card>
