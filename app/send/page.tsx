@@ -230,9 +230,10 @@ export default function SendPage() {
               How money moves
             </div>
             <div className="mt-2 grid sm:grid-cols-3 gap-3 text-sm">
-              <FlowStep n={1} title="RailAED treasury">
+              <FlowStep n={1} title="Your wallet">
                 <span className="text-[color:var(--cream-400)] text-xs">
-                  Circle Developer-Controlled Wallet · pre-funded for the demo
+                  Tap <span className="text-[color:var(--cream-200)]">Sign in</span> for your own
+                  Circle wallet · fund it from the testnet faucet in one tap
                 </span>
               </FlowStep>
               <FlowStep n={2} title="USDC on Arc">
@@ -247,10 +248,9 @@ export default function SendPage() {
               </FlowStep>
             </div>
             <p className="mt-3 text-xs text-[color:var(--cream-500)] leading-relaxed">
-              For this testnet demo, the platform funds every send from its treasury. Production
-              would authenticate each sender via Circle Modular Wallets (passkey or social login),
-              top up their wallet from a card or bank via Circle&apos;s on-ramp, and sign transfers
-              from their own keys.
+              Not signed in? The send falls back to the platform treasury so you can try the flow
+              instantly. Production would replace this with Circle User-Controlled Wallets
+              (PIN/passkey) and a card/bank on-ramp.
             </p>
           </div>
         </div>

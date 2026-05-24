@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { SignInButton } from "@/components/sign-in-button";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -40,11 +41,11 @@ export default function RootLayout({
               </Link>
             </div>
 
-            {/* Right: nav */}
+            {/* Right: nav + sign-in */}
             <div className="flex items-center gap-3">
               <NavChip href="/send">Send</NavChip>
               <NavChip href="/payroll">Payroll</NavChip>
-              <span className="pill-outline text-[color:var(--cream-400)] hidden sm:inline-flex">2026</span>
+              <SignInButton />
             </div>
           </div>
         </header>

@@ -11,6 +11,9 @@ import {
   type ClaimPayload,
 } from '@/lib/claim-token';
 import { saveTransfer } from '@/lib/state';
+import { readSession } from '@/lib/session';
+import { getUsdcBalance } from '@/lib/arc';
+import { usdcToHuman } from '@/lib/usdc';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,16 +42,36 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'amount rounds to zero' }, { status: 400 });
     }
 
-    // 2. Provision a recipient wallet (developer-controlled, scoped to our wallet set).
+    // 2. Pick the funding wallet — signed-in user's wallet if they have one,
+    //    otherwise the platform treasury. Verify the chosen wallet has enough
+    //    USDC on-chain before we bother provisioning a recipient.
+    const session = await readSession();
+    const fundingWalletId = session?.walletId ?? env.circle.ownerWalletId;
+    const fundingAddress = (session?.address ?? env.circle.ownerWalletAddress) as `0x${string}`;
+    const fundingBalance = await getUsdcBalance(fundingAddress).catch(() => 0n);
+    const fundingHuman = Number(usdcToHuman(fundingBalance));
+    if (fundingHuman + 1e-6 < Number(amountUsdc)) {
+      return NextResponse.json(
+        {
+          error: session
+            ? `Your wallet has ${fundingHuman.toFixed(2)} USDC. Top up from the Faucet button (give it ~3 s to confirm) and try again.`
+            : `Treasury has ${fundingHuman.toFixed(2)} USDC. Either sign in to use your own wallet, or top up via /api/seed/fund.`,
+          fundingSource: session ? 'user' : 'treasury',
+          fundingAddress,
+          fundingBalance: fundingHuman.toFixed(6),
+        },
+        { status: 400 }
+      );
+    }
+
+    // 3. Provision a recipient wallet (developer-controlled, scoped to our wallet set).
     const transferId = randomUUID();
     const refId = `railaed:transfer:${transferId}`;
     const recipientWallet = await createWallet(refId);
 
-    // 3. Initiate the USDC transfer from the platform's owner wallet.
-    //    If the treasury is empty, Circle returns "insufficient balance" — bubble
-    //    that up as a JSON error so the client doesn't choke on an HTML 500.
+    // 4. Initiate the USDC transfer.
     const tx = await transferUsdc({
-      fromWalletId: env.circle.ownerWalletId,
+      fromWalletId: fundingWalletId,
       destinationAddress: recipientWallet.address,
       amountUsdc,
       refId,
@@ -94,6 +117,8 @@ export async function POST(request: NextRequest) {
       quote,
       corridor: COUNTRIES[corridor],
       recipientName: recipientName ?? null,
+      fundingSource: session ? 'user' : 'treasury',
+      fundingAddress,
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'send failed';
