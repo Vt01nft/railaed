@@ -22,6 +22,8 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
       destinationAddress: tx.destinationAddress ?? null,
       sourceAddress: tx.sourceAddress ?? null,
       amounts: tx.amounts ?? null,
+      refId: tx.refId ?? null,
+      raw: tx,
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'tx fetch failed';
