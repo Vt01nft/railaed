@@ -122,9 +122,23 @@ export async function listOwnerTransactions(limit = 25): Promise<OwnerTransactio
   return listWalletTransactions([env.circle.ownerWalletId], limit);
 }
 
+function classifyRefId(refId?: string): OwnerTransaction['kind'] {
+  if (!refId) return 'other';
+  if (refId.startsWith('railaed:payroll:')) return 'payroll';
+  if (refId.startsWith('railaed:transfer:')) return 'transfer';
+  if (refId.startsWith('railaed:faucet:')) return 'transfer';
+  return 'other';
+}
+
 /**
  * Lists transactions for an arbitrary set of wallet ids (newest first, deduped).
  * Used to fold in the signed-in user's own wallet alongside the treasury feed.
+ *
+ * Circle's listTransactions does NOT echo `refId` (verified empirically — the
+ * field is in the OpenAPI Transaction schema but the response omits it). To
+ * get usable kind labels we backfill in parallel from `getTransaction`, which
+ * does return refId. Bounded by the list page size, so worst case 25 extra
+ * calls per refresh — fine at hackathon scale.
  */
 export async function listWalletTransactions(
   walletIds: string[],
@@ -149,15 +163,30 @@ export async function listWalletTransactions(
       refId,
       createDate: t.createDate ?? '',
       updateDate: t.updateDate ?? '',
-      kind: refId?.startsWith('railaed:payroll:')
-        ? 'payroll'
-        : refId?.startsWith('railaed:transfer:')
-          ? 'transfer'
-          : refId?.startsWith('railaed:faucet:')
-            ? 'transfer'
-            : 'other',
+      kind: classifyRefId(refId),
     };
   });
+
+  // Backfill refId for rows where listTransactions omitted it.
+  const missing = mapped.filter((m) => !m.refId);
+  if (missing.length > 0) {
+    const enriched = await Promise.all(
+      missing.map((m) => getTransaction(m.id).catch(() => null))
+    );
+    const byId = new Map(
+      enriched
+        .filter((t): t is NonNullable<typeof t> => !!t)
+        .map((t) => [t.id, t.refId ?? undefined])
+    );
+    for (const m of mapped) {
+      if (m.refId) continue;
+      const r = byId.get(m.id);
+      if (!r) continue;
+      m.refId = r;
+      m.kind = classifyRefId(r);
+    }
+  }
+
   const seen = new Set<string>();
   const deduped: OwnerTransaction[] = [];
   for (const t of mapped) {
