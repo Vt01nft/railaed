@@ -1,21 +1,21 @@
 # RailAED — 2-minute demo script
 
-Live demo: **https://railaed-promptforge.vercel.app**
+Live demo: **https://railaed-uae.vercel.app**
 
 This is the script for the submission video. It's tight on purpose — judges watch
 dozens of these and you want every second to land.
 
 ## Setup before recording
 
-1. Hit `https://railaed-promptforge.vercel.app/api/health` — owner USDC balance should be > 2.
-   If not: `curl -X POST https://railaed-promptforge.vercel.app/api/seed/fund -d '{"amount":"5"}' -H "content-type: application/json"`
+1. Hit `https://railaed-uae.vercel.app/api/health` — owner USDC balance should be > 2.
+   If not: `curl -X POST https://railaed-uae.vercel.app/api/seed/fund -d '{"amount":"5"}' -H "content-type: application/json"`
 2. (Local only) `rm -f .railaed-state.json` to get the seed contractors back to defaults.
    On the live deploy the state file is read/written under the function's
    temp dir and resets between invocations — that's fine for the demo.
 3. Open three browser tabs:
-   - `https://railaed-promptforge.vercel.app/` (landing)
-   - `https://railaed-promptforge.vercel.app/send` (sender flow)
-   - `https://railaed-promptforge.vercel.app/payroll` (employer flow)
+   - `https://railaed-uae.vercel.app/` (landing)
+   - `https://railaed-uae.vercel.app/send` (sender flow)
+   - `https://railaed-uae.vercel.app/payroll` (employer flow)
 4. Open the Arc explorer in a fourth tab: `https://testnet.arcscan.app`
    (so you can paste in the tx hash at the end).
 
@@ -30,8 +30,21 @@ dozens of these and you want every second to land.
 
 [Hover the three stats: ~2 sec, 0.30 % fee, Arc chain 5042002.]
 
-### 0:10 — Send flow (~50 s)
-> "Let's send 500 dirhams from Dubai to a recipient in India."
+### 0:10 — Sign in (~15 s)
+[Click *Sign in* in the header.]
+
+> "Type an email. RailAED provisions you a Circle developer-controlled wallet
+> on Arc, scoped to that email, and gives you a one-tap faucet so you can fund
+> yourself with 5 USDC from the treasury."
+
+[Enter an email. The header chip flips to *0 USDC · 0x9906…008a*. Tap the chip → modal opens → tap *Fund +5 USDC*. Watch the chip update to 5 USDC.]
+
+> "That's a real testnet wallet, that's a real on-chain transfer from the treasury,
+> and that's the same wallet that's going to send the remittance below."
+
+### 0:25 — Send flow (~45 s)
+> "Now let's send 500 dirhams from Dubai to a recipient in India — from our
+> own wallet, not the platform's."
 
 [Type `500` in the AED field. India is selected by default.]
 
@@ -47,12 +60,13 @@ dozens of these and you want every second to land.
 [Type a recipient phone. Click *Send now*.]
 
 > "Behind the scenes, the backend provisioned a Circle developer-controlled wallet
-> on Arc, transferred USDC from the platform treasury, and signed a HMAC-protected
-> claim link. Total time on-chain: about three seconds."
+> on Arc for the recipient, transferred USDC from *my* wallet — not the platform's —
+> and signed a HMAC-protected claim link. Total time on-chain: about three seconds.
+> You can see the funding source echoed in the success card."
 
-[Success view appears with the claim link + the WhatsApp button.]
+[Success view appears with the claim link + the WhatsApp button. Activity feed below shows the send appear in real time, sourced from Circle's `listTransactions`.]
 
-### 1:00 — Recipient claim (~25 s)
+### 1:10 — Recipient claim (~25 s)
 [Click *Open as recipient*.]
 
 > "This is what the recipient sees from the WhatsApp link. The wallet balance is
@@ -63,11 +77,11 @@ dozens of these and you want every second to land.
 
 > "No app install. No seed phrase. The recipient just sees money."
 
-### 1:25 — Payroll (~30 s)
+### 1:35 — Payroll (~30 s)
 [Switch to the `/payroll` tab.]
 
 > "Same rails, different shape: global payroll. Three contractors — India,
-> Philippines, Pakistan — pre-loaded. Each will be paid in USDC into their own
+> Spain, Nigeria — pre-loaded. Each will be paid in USDC into their own
 > Circle wallet."
 
 [Click *Run payroll*.]
@@ -76,7 +90,7 @@ dozens of these and you want every second to land.
 > Each contractor address is a real wallet on a real chain — payroll history is
 > verifiable, not just a CSV in our database."
 
-### 1:55 — Wrap (~5 s)
+### 2:05 — Wrap (~5 s)
 > "RailAED. UAE to anywhere, in seconds, on Arc."
 
 [Cut.]

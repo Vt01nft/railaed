@@ -6,7 +6,7 @@
 
 Built for the **[Stablecoin Commerce Stack Challenge](https://challenges.ignyte.ae/competition/4B436318-C737-F111-9A49-6045BD14D400)** by Ignyte, with Circle and Arc as technical sponsors.
 
-- **Live demo:** [railaed-promptforge.vercel.app](https://railaed-promptforge.vercel.app)
+- **Live demo:** [railaed-uae.vercel.app](https://railaed-uae.vercel.app)
 - **Source:** [github.com/Vt01nft/railaed](https://github.com/Vt01nft/railaed)
 - **Track:** Track 1 — Best Cross-Border Payments & Remittances Experience (UAE → Global)
 - **Circle Developer Account:** `vt01nfts@gmail.com`
@@ -36,9 +36,13 @@ A live demo on Arc testnet:
 | Flow | Path | Verified on Arc |
 |------|------|------------------|
 | Quote | `POST /api/quote` | AED → USD → USDC + 5-competitor honesty score |
-| Send  | `POST /api/send` | Provisions a Circle wallet for the recipient + transfers USDC + signs a claim token (~3 s settlement) |
+| Sign in | `POST /api/user/login` | Provisions a per-email Circle wallet on Arc + sets an HMAC session cookie |
+| Self-fund | `POST /api/user/faucet` | Drips 5 USDC from the platform treasury to the signed-in user's wallet, returns the Arc tx hash |
+| Send (from user) | `POST /api/send` (cookie) | Sends from the user's own wallet when signed in, otherwise from the treasury · `fundingSource` echoed in response |
+| Send (no auth) | `POST /api/send` | Anonymous flow still works · provisions recipient wallet + transfers USDC + signs a claim token (~3 s) |
 | Claim | `GET /api/claim/[token]` | HMAC-verified token, on-chain balance check, recipient view with corridor metadata |
 | Payroll batch | `POST /api/payroll/run` | Parallel transfers from the platform wallet → N contractor wallets, all settled in seconds |
+| History | `GET /api/history` | Live feed sourced from Circle `listTransactions`; folds in the signed-in user's wallet so users see their own sends · `scope=me` for user-only |
 | Health | `GET /api/health` | Arc RPC chain id + block, USDC decimals, owner & deployer balances, Circle wallet-set status |
 | Seed funding | `POST /api/seed/fund` | Tops up the owner Circle wallet from the deployer EOA via viem (Circle's faucet returns 403 on this wallet — explained below) |
 
@@ -205,30 +209,40 @@ railaed/
 │   ├── globals.css                    Tailwind v4 + brand tokens
 │   └── api/
 │       ├── quote/route.ts             AED→USDC + honesty score
-│       ├── send/route.ts              create recipient wallet + transfer + sign claim token
+│       ├── send/route.ts              create recipient wallet + transfer + sign claim token (uses signed-in wallet if cookie present)
 │       ├── claim/[token]/route.ts     verify token + on-chain balance
 │       ├── tx/[id]/route.ts           Circle tx poll
 │       ├── balance/[address]/route.ts USDC balanceOf via viem
+│       ├── history/route.ts           live feed from Circle listTransactions, merges user+treasury when signed in
 │       ├── payroll/contractors/route.ts  GET + PUT seed list
 │       ├── payroll/run/route.ts       parallel transfers
-│       ├── faucet/route.ts            Circle testnet faucet
+│       ├── user/
+│       │   ├── login/route.ts         provisions per-email Circle wallet + sets HMAC session cookie
+│       │   ├── me/route.ts            returns current user + on-chain balance
+│       │   ├── faucet/route.ts        drips 5 USDC from treasury to user wallet
+│       │   └── logout/route.ts        clears session cookie
+│       ├── faucet/route.ts            Circle testnet faucet (admin)
 │       ├── seed/fund/route.ts         EOA→wallet bootstrap funding
 │       └── health/route.ts            self-check
 ├── components/
 │   ├── ui/                            button, card, input, badge
+│   ├── sign-in-button.tsx             header chip + sign-in / wallet modal + faucet
+│   ├── history-list.tsx               live activity feed with auto-refresh
 │   ├── corridor-picker.tsx
 │   ├── honesty-score.tsx
 │   ├── address-pill.tsx
 │   └── tx-state-badge.tsx
 ├── lib/
-│   ├── env.ts                         typed env access (server-only)
+│   ├── env.ts                         typed env access (server-only, build-phase-safe)
+│   ├── session.ts                     HMAC cookie session encode/decode/read/write/clear
 │   ├── arc.ts                         viem PublicClient + WalletClient (deployer)
-│   ├── circle.ts                      Circle SDK wrapper (createWallet, transferUsdc, faucet)
-│   ├── usdc.ts                        decimals, format helpers
+│   ├── circle.ts                      Circle SDK wrapper (createWallet, transferUsdc, listWalletTransactions)
+│   ├── usdc.ts                        decimals (6), format helpers
 │   ├── fx.ts                          live AED/USD + honesty score
-│   ├── corridors.ts                   7 corridors + local-currency rates
+│   ├── corridors.ts                   50 countries (8 featured) + dial codes + local-currency rates
 │   ├── claim-token.ts                 HMAC-signed JWT-like claim links
-│   └── state.ts                       JSON-file cache (transfers, payroll, contractors)
+│   ├── payroll-seed.ts                seed contractors used as fallback when state cache is empty
+│   └── state.ts                       JSON-file cache (transfers, payroll, contractors, users)
 └── docs/
     ├── RESEARCH.md                    1,100-line technical research
     └── STABLEFX_REQUEST.md            access-request email draft for gated rail
@@ -254,7 +268,8 @@ railaed/
 1. **Live honesty score** — every quote shows what 5 traditional UAE rails would charge for the same AED, with `Δ USD` vs RailAED. Fee data is illustrative until the StableFX access request is approved (see `docs/STABLEFX_REQUEST.md`), then it can become a live quote.
 2. **WhatsApp-native claim links** — recipients never install an app or see a hex address. They open a link, see USDC, tap claim. Cards are passkey-ready when we migrate to Modular Wallets.
 3. **Per-recipient Circle wallets, not a shared escrow** — every send and every payroll line provisions a dedicated wallet for the recipient. ArcScan shows a real address you can audit, not an opaque pool.
-4. **Streaming payroll mode (planned)** — Nanopayments on Arc lets us settle per-second. The architecture is ready; the worker hook is reserved on the `agent` wallet (`CIRCLE_AGENT_WALLET_ID`).
+4. **Per-user wallets with a one-tap self-fund** — sign in with an email, get a dev-controlled Circle wallet provisioned for you on Arc, drip yourself 5 USDC from the treasury, then send from your own balance. The history feed merges your wallet's txs with the treasury's so you can see your own activity. Migration path to Circle User-Controlled Wallets (PIN/passkey) is mapped in v2.
+5. **Streaming payroll mode (planned)** — Nanopayments on Arc lets us settle per-second. The architecture is ready; the worker hook is reserved on the `agent` wallet (`CIRCLE_AGENT_WALLET_ID`).
 
 ---
 
