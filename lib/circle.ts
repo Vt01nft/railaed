@@ -119,12 +119,24 @@ export interface OwnerTransaction {
  * Circle's API is the system of record.
  */
 export async function listOwnerTransactions(limit = 25): Promise<OwnerTransaction[]> {
+  return listWalletTransactions([env.circle.ownerWalletId], limit);
+}
+
+/**
+ * Lists transactions for an arbitrary set of wallet ids (newest first, deduped).
+ * Used to fold in the signed-in user's own wallet alongside the treasury feed.
+ */
+export async function listWalletTransactions(
+  walletIds: string[],
+  limit = 25
+): Promise<OwnerTransaction[]> {
+  if (walletIds.length === 0) return [];
   const res = await circle().listTransactions({
-    walletIds: [env.circle.ownerWalletId],
+    walletIds,
     pageSize: limit,
   });
   const rows = res.data?.transactions ?? [];
-  return rows.map((t): OwnerTransaction => {
+  const mapped = rows.map((t): OwnerTransaction => {
     const refId = t.refId ?? undefined;
     const amount = Array.isArray(t.amounts) ? (t.amounts[0] ?? '0') : '0';
     return {
@@ -141,9 +153,20 @@ export async function listOwnerTransactions(limit = 25): Promise<OwnerTransactio
         ? 'payroll'
         : refId?.startsWith('railaed:transfer:')
           ? 'transfer'
-          : 'other',
+          : refId?.startsWith('railaed:faucet:')
+            ? 'transfer'
+            : 'other',
     };
   });
+  const seen = new Set<string>();
+  const deduped: OwnerTransaction[] = [];
+  for (const t of mapped) {
+    if (seen.has(t.id)) continue;
+    seen.add(t.id);
+    deduped.push(t);
+  }
+  deduped.sort((a, b) => (b.createDate || '').localeCompare(a.createDate || ''));
+  return deduped.slice(0, limit);
 }
 
 /** Request testnet USDC from Circle's faucet for an Arc testnet address. */
