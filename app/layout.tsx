@@ -15,9 +15,42 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "RailAED · UAE → Anywhere · USDC on Arc",
+  metadataBase: new URL("https://railaed-uae.vercel.app"),
+  title: {
+    default: "RailAED · UAE → Anywhere · USDC on Arc",
+    template: "%s · RailAED",
+  },
   description:
-    "Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds. Built for the Stablecoin Commerce Stack Challenge.",
+    "Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds. Live honesty score against Al Ansari, Wise, Western Union and Remitly. Built for the Stablecoin Commerce Stack Challenge.",
+  keywords: [
+    "stablecoin remittance",
+    "USDC",
+    "Arc blockchain",
+    "Circle",
+    "UAE",
+    "AED",
+    "cross-border payments",
+    "global payroll",
+    "Stablecoin Commerce Stack Challenge",
+  ],
+  authors: [{ name: "RailAED" }],
+  applicationName: "RailAED",
+  openGraph: {
+    type: "website",
+    siteName: "RailAED",
+    title: "RailAED · UAE → Anywhere · USDC on Arc",
+    description:
+      "Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds. Live honesty score on every quote.",
+    url: "https://railaed-uae.vercel.app",
+    locale: "en_AE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RailAED · UAE → Anywhere · USDC on Arc",
+    description:
+      "Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds. Built for the Stablecoin Commerce Stack Challenge.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
