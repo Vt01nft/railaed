@@ -211,10 +211,10 @@ export default function SendPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16">
-      <header className="text-center mb-8">
+    <div className="mx-auto max-w-6xl px-5 sm:px-6 py-10 sm:py-12 lg:py-16">
+      <header className="text-center mb-6 sm:mb-8">
         <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold-500)]">Send money</div>
-        <h1 className="mt-2 font-serif text-4xl sm:text-5xl font-medium tracking-tight text-[color:var(--cream-200)]">
+        <h1 className="mt-2 font-serif text-[2rem] sm:text-5xl font-medium tracking-tight text-[color:var(--cream-200)]">
           UAE → <span className="italic text-gold-bright">{COUNTRIES[corridor].country}</span>
         </h1>
       </header>
@@ -256,9 +256,9 @@ export default function SendPage() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-[1.05fr_1fr] gap-6">
+      <div className="grid lg:grid-cols-[1.05fr_1fr] gap-5 sm:gap-6">
         <Card variant="gradient" className="p-1.5">
-          <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-7">
+          <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-5 sm:p-7">
             <div className="space-y-6">
               <div>
                 <Label htmlFor="aed">You send</Label>
@@ -269,9 +269,9 @@ export default function SendPage() {
                     value={aed}
                     onChange={(e) => setAed(e.target.value.replace(/[^\d.]/g, ''))}
                     placeholder="500"
-                    className="h-16 pl-6 pr-20 font-serif text-3xl font-medium tabular text-[color:var(--cream-200)] rounded-2xl"
+                    className="h-14 sm:h-16 pl-5 sm:pl-6 pr-16 sm:pr-20 font-serif text-2xl sm:text-3xl font-medium tabular text-[color:var(--cream-200)] rounded-2xl"
                   />
-                  <span className="absolute right-6 top-1/2 -translate-y-1/2 font-mono text-sm text-[color:var(--gold-500)]">AED</span>
+                  <span className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 font-mono text-sm text-[color:var(--gold-500)]">AED</span>
                 </div>
               </div>
 
@@ -473,16 +473,16 @@ function SuccessView({
   const whatsapp = `https://wa.me/${recipientPhone.replace(/[^\d]/g, '')}?text=${encodeURIComponent(shareText + ' ' + result.claimUrl)}`;
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16 lg:py-20">
+    <div className="mx-auto max-w-3xl px-5 sm:px-6 py-12 sm:py-16 lg:py-20">
       <Card variant="gradient" className="p-1.5">
-        <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-8">
-          <div className="flex items-start gap-4">
-            <div className="size-14 rounded-2xl bg-[color:var(--mint-500)]/15 text-[color:var(--mint-300)] grid place-items-center border border-[color:var(--mint-500)]/30 shrink-0">
-              <Check className="size-7" />
+        <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-5 sm:p-8">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="size-12 sm:size-14 rounded-2xl bg-[color:var(--mint-500)]/15 text-[color:var(--mint-300)] grid place-items-center border border-[color:var(--mint-500)]/30 shrink-0">
+              <Check className="size-6 sm:size-7" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">Sent</div>
-              <h2 className="font-serif text-3xl font-medium tracking-tight text-[color:var(--cream-200)]">
+              <h2 className="font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[color:var(--cream-200)] break-words">
                 {formatAed(amountAed)} <span className="text-[color:var(--cream-500)]">→</span>{' '}
                 {result.amountUsdc} <span className="text-[color:var(--gold-500)]">USDC</span>
               </h2>

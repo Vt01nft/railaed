@@ -117,16 +117,16 @@ export default function ClaimPage({ params }: { params: Promise<{ token: string 
   const localAmount = corridor ? onchain * corridor.usdToLocalRate : 0;
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-14 lg:py-20 space-y-6">
+    <div className="mx-auto max-w-2xl px-5 sm:px-6 py-10 sm:py-14 lg:py-20 space-y-6">
       <Card variant="gradient" className="p-1.5">
-        <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-8">
-          <div className="flex items-start gap-4">
-            <div className="size-14 rounded-2xl bg-[color:var(--gold-500)]/15 text-[color:var(--gold-300)] grid place-items-center border border-[color:var(--gold-500)]/30 shrink-0">
-              <Wallet className="size-7" />
+        <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-5 sm:p-8">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="size-12 sm:size-14 rounded-2xl bg-[color:var(--gold-500)]/15 text-[color:var(--gold-300)] grid place-items-center border border-[color:var(--gold-500)]/30 shrink-0">
+              <Wallet className="size-6 sm:size-7" />
             </div>
-            <div>
+            <div className="min-w-0 flex-1">
               <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">You&apos;ve received money</div>
-              <h1 className="mt-1 font-serif text-3xl font-medium tracking-tight text-[color:var(--cream-200)]">
+              <h1 className="mt-1 font-serif text-2xl sm:text-3xl font-medium tracking-tight text-[color:var(--cream-200)] break-words">
                 {p.senderName} sent you{' '}
                 <span className="font-serif italic text-gold-bright">{p.amountUsdc} USDC</span>
               </h1>
@@ -134,11 +134,11 @@ export default function ClaimPage({ params }: { params: Promise<{ token: string 
             </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-[color:var(--border)] bg-gradient-to-br from-[color:var(--gold-500)]/[0.06] via-transparent to-[color:var(--mint-500)]/[0.05] p-6">
+          <div className="mt-6 sm:mt-8 rounded-2xl border border-[color:var(--border)] bg-gradient-to-br from-[color:var(--gold-500)]/[0.06] via-transparent to-[color:var(--mint-500)]/[0.05] p-4 sm:p-6">
             <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">Your wallet balance</div>
-            <div className="mt-2 font-serif text-6xl font-medium tabular text-[color:var(--cream-200)] leading-none">
+            <div className="mt-2 font-serif text-4xl sm:text-6xl font-medium tabular text-[color:var(--cream-200)] leading-none break-words">
               {data.onchainBalance?.human ?? '0'}{' '}
-              <span className="text-xl text-[color:var(--gold-500)] font-medium">USDC</span>
+              <span className="text-base sm:text-xl text-[color:var(--gold-500)] font-medium">USDC</span>
             </div>
             {corridor ? (
               <div className="mt-2 text-sm text-[color:var(--cream-400)] font-mono">

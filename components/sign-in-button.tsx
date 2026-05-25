@@ -95,15 +95,16 @@ export function SignInButton() {
       <>
         <button
           onClick={() => setWalletOpen(true)}
-          className="pill-outline gap-2 cursor-pointer"
+          className="pill-outline gap-1.5 sm:gap-2 cursor-pointer px-3 sm:px-4"
           title="View wallet"
+          aria-label={`Wallet · ${user.balanceUsdc ?? '0'} USDC`}
         >
           <Wallet className="size-3.5 text-[color:var(--gold-500)]" />
-          <span className="hidden sm:inline text-[color:var(--cream-300)] font-mono text-xs">
+          <span className="text-[color:var(--cream-300)] font-mono text-xs">
             {user.balanceUsdc ?? '0'}
           </span>
           <span className="text-[10px] text-[color:var(--gold-500)] font-medium">USDC</span>
-          <span className="font-mono text-xs text-[color:var(--cream-500)] hidden md:inline">
+          <span className="font-mono text-xs text-[color:var(--cream-500)] hidden lg:inline">
             {truncateAddr(user.address, 4, 4)}
           </span>
         </button>
@@ -113,17 +114,17 @@ export function SignInButton() {
             <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold-500)]">
               Your demo wallet
             </div>
-            <h2 className="mt-1 font-serif text-2xl font-medium text-[color:var(--cream-200)]">
+            <h2 className="mt-1 font-serif text-xl sm:text-2xl font-medium text-[color:var(--cream-200)] break-all">
               {user.email}
             </h2>
-            <div className="mt-5 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-5">
+            <div className="mt-5 rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-4 sm:p-5">
               <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--cream-500)]">Balance</div>
-              <div className="mt-1 font-serif text-4xl font-medium tabular text-[color:var(--cream-200)]">
+              <div className="mt-1 font-serif text-3xl sm:text-4xl font-medium tabular text-[color:var(--cream-200)]">
                 {user.balanceUsdc ?? '0'}{' '}
                 <span className="text-base text-[color:var(--gold-500)] font-medium">USDC</span>
               </div>
-              <div className="mt-3 flex items-center gap-2 font-mono text-xs text-[color:var(--cream-400)]">
-                <span>{truncateAddr(user.address, 8, 6)}</span>
+              <div className="mt-3 flex items-center gap-2 font-mono text-xs text-[color:var(--cream-400)] flex-wrap">
+                <span className="break-all">{truncateAddr(user.address, 8, 6)}</span>
                 <a
                   href={`https://testnet.arcscan.app/address/${user.address}`}
                   target="_blank"
@@ -243,11 +244,11 @@ export function SignInButton() {
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-3xl bg-[color:var(--surface)] border border-[color:var(--border-strong)] shadow-2xl p-7"
+        className="w-full max-w-md rounded-3xl bg-[color:var(--surface)] border border-[color:var(--border-strong)] shadow-2xl p-5 sm:p-7 my-4"
         onClick={(e) => e.stopPropagation()}
       >
         {children}

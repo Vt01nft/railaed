@@ -109,10 +109,10 @@ export default function PayrollPage() {
   const total = contractors.reduce((a, c) => a + Number(c.monthlyUsdc || 0), 0);
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12 lg:py-16 space-y-6">
+    <div className="mx-auto max-w-6xl px-5 sm:px-6 py-10 sm:py-12 lg:py-16 space-y-6">
       <header className="text-center mb-2">
         <div className="text-[10px] uppercase tracking-[0.28em] text-[color:var(--gold-500)]">Global payroll</div>
-        <h1 className="mt-2 font-serif text-4xl sm:text-5xl font-medium tracking-tight text-[color:var(--cream-200)]">
+        <h1 className="mt-2 font-serif text-[2rem] sm:text-5xl font-medium tracking-tight text-[color:var(--cream-200)]">
           Pay every contractor <span className="italic text-gold-bright">in one click</span>
         </h1>
         <p className="mt-3 text-sm text-[color:var(--cream-400)] max-w-xl mx-auto">
@@ -120,12 +120,12 @@ export default function PayrollPage() {
         </p>
       </header>
 
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="w-64">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+        <div className="w-full sm:w-64">
           <Label htmlFor="employer">Employer name</Label>
           <Input id="employer" className="mt-2" value={employer} onChange={(e) => setEmployer(e.target.value)} />
         </div>
-        <Badge tone="gold">{contractors.length} contractors · {formatUsd(total)} this run</Badge>
+        <Badge tone="gold" className="self-start sm:self-auto">{contractors.length} contractors · {formatUsd(total)} this run</Badge>
       </div>
 
       <Card>
@@ -146,32 +146,106 @@ export default function PayrollPage() {
               <Loader2 className="size-5 animate-spin mx-auto" />
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
-                  <tr>
-                    <th className="text-left px-2 py-3 font-semibold">Name</th>
-                    <th className="text-left px-2 py-3 font-semibold">Country</th>
-                    <th className="text-left px-2 py-3 font-semibold">Wallet on Arc</th>
-                    <th className="text-right px-2 py-3 font-semibold">Monthly USDC</th>
-                    <th className="px-2 py-3"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[color:var(--border)]">
-                  {contractors.map((c) => (
-                    <tr key={c.id} className="hover:bg-[color:var(--surface-1)]/30">
-                      <td className="px-2 py-2">
-                        <Input
-                          value={c.name}
-                          onChange={(e) => updateRow(c.id, { name: e.target.value })}
-                          className="h-9"
-                        />
-                      </td>
-                      <td className="px-2 py-2">
+            <>
+              {/* Desktop: table. Hidden on small screens to avoid horizontal scroll. */}
+              <div className="hidden md:block">
+                <table className="w-full text-sm">
+                  <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
+                    <tr>
+                      <th className="text-left px-2 py-3 font-semibold">Name</th>
+                      <th className="text-left px-2 py-3 font-semibold">Country</th>
+                      <th className="text-left px-2 py-3 font-semibold">Wallet on Arc</th>
+                      <th className="text-right px-2 py-3 font-semibold">Monthly USDC</th>
+                      <th className="px-2 py-3"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[color:var(--border)]">
+                    {contractors.map((c) => (
+                      <tr key={c.id} className="hover:bg-[color:var(--surface-1)]/30">
+                        <td className="px-2 py-2">
+                          <Input
+                            value={c.name}
+                            onChange={(e) => updateRow(c.id, { name: e.target.value })}
+                            className="h-9"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <select
+                            value={c.country}
+                            onChange={(e) => updateRow(c.id, { country: e.target.value as CorridorCode })}
+                            className="h-9 rounded-full border border-[color:var(--border-strong)] bg-[color:var(--surface-deep)]/60 px-3 text-sm text-[color:var(--cream-200)]"
+                          >
+                            {CORRIDOR_LIST.map((co) => (
+                              <option key={co.code} value={co.code} className="bg-[color:var(--surface)]">
+                                {co.flag} {co.country}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-2 py-2">
+                          {c.address ? (
+                            <AddressPill address={c.address} />
+                          ) : (
+                            <span className="text-xs text-[color:var(--cream-500)]">provisions on first run</span>
+                          )}
+                        </td>
+                        <td className="px-2 py-2 text-right">
+                          <Input
+                            value={c.monthlyUsdc}
+                            onChange={(e) =>
+                              updateRow(c.id, { monthlyUsdc: e.target.value.replace(/[^\d.]/g, '') })
+                            }
+                            className="h-9 text-right font-mono"
+                          />
+                        </td>
+                        <td className="px-2 py-2">
+                          <Button variant="ghost" size="sm" onClick={() => removeRow(c.id)} title="Remove">
+                            <Trash2 className="size-4 text-[color:var(--cream-500)]" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                    {contractors.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="text-center text-[color:var(--cream-500)] py-8 text-sm">
+                          No contractors yet. Click <em className="text-[color:var(--cream-300)]">Add</em>.
+                        </td>
+                      </tr>
+                    ) : null}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile: stacked cards. Each contractor gets its own panel with labelled fields. */}
+              <div className="md:hidden space-y-3">
+                {contractors.map((c) => (
+                  <div
+                    key={c.id}
+                    className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-4 space-y-3"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <Label className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
+                        Contractor
+                      </Label>
+                      <Button variant="ghost" size="sm" onClick={() => removeRow(c.id)} title="Remove">
+                        <Trash2 className="size-4 text-[color:var(--cream-500)]" />
+                      </Button>
+                    </div>
+                    <Input
+                      value={c.name}
+                      onChange={(e) => updateRow(c.id, { name: e.target.value })}
+                      placeholder="Full name"
+                      className="h-10"
+                    />
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
+                          Country
+                        </Label>
                         <select
                           value={c.country}
                           onChange={(e) => updateRow(c.id, { country: e.target.value as CorridorCode })}
-                          className="h-9 rounded-full border border-[color:var(--border-strong)] bg-[color:var(--surface-deep)]/60 px-3 text-sm text-[color:var(--cream-200)]"
+                          className="mt-1.5 h-10 w-full rounded-full border border-[color:var(--border-strong)] bg-[color:var(--surface-deep)]/60 px-3 text-sm text-[color:var(--cream-200)]"
                         >
                           {CORRIDOR_LIST.map((co) => (
                             <option key={co.code} value={co.code} className="bg-[color:var(--surface)]">
@@ -179,51 +253,51 @@ export default function PayrollPage() {
                             </option>
                           ))}
                         </select>
-                      </td>
-                      <td className="px-2 py-2">
+                      </div>
+                      <div>
+                        <Label className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
+                          Monthly USDC
+                        </Label>
+                        <Input
+                          value={c.monthlyUsdc}
+                          onChange={(e) => updateRow(c.id, { monthlyUsdc: e.target.value.replace(/[^\d.]/g, '') })}
+                          className="mt-1.5 h-10 text-right font-mono"
+                          inputMode="decimal"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
+                        Wallet on Arc
+                      </Label>
+                      <div className="mt-1.5">
                         {c.address ? (
                           <AddressPill address={c.address} />
                         ) : (
                           <span className="text-xs text-[color:var(--cream-500)]">provisions on first run</span>
                         )}
-                      </td>
-                      <td className="px-2 py-2 text-right">
-                        <Input
-                          value={c.monthlyUsdc}
-                          onChange={(e) =>
-                            updateRow(c.id, { monthlyUsdc: e.target.value.replace(/[^\d.]/g, '') })
-                          }
-                          className="h-9 text-right font-mono"
-                        />
-                      </td>
-                      <td className="px-2 py-2">
-                        <Button variant="ghost" size="sm" onClick={() => removeRow(c.id)} title="Remove">
-                          <Trash2 className="size-4 text-[color:var(--cream-500)]" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                  {contractors.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="text-center text-[color:var(--cream-500)] py-8 text-sm">
-                        No contractors yet. Click <em className="text-[color:var(--cream-300)]">Add</em>.
-                      </td>
-                    </tr>
-                  ) : null}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {contractors.length === 0 ? (
+                  <div className="text-center text-[color:var(--cream-500)] py-8 text-sm">
+                    No contractors yet. Tap <em className="text-[color:var(--cream-300)]">Add</em>.
+                  </div>
+                ) : null}
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
 
       {error ? <div className="text-sm text-[color:var(--danger)]">{error}</div> : null}
 
-      <div className="flex flex-wrap items-center gap-3 justify-end">
-        <Button variant="secondary" onClick={() => saveContractors(contractors)}>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end">
+        <Button variant="secondary" onClick={() => saveContractors(contractors)} className="sm:w-auto w-full">
           Save changes
         </Button>
-        <Button onClick={runPayroll} loading={running} size="lg" variant="gold" disabled={contractors.length === 0}>
+        <Button onClick={runPayroll} loading={running} size="lg" variant="gold" disabled={contractors.length === 0} className="sm:w-auto w-full">
           <Play className="size-4" /> Run payroll · {formatUsd(total)}
         </Button>
       </div>
@@ -303,9 +377,9 @@ function RunReport({ run }: { run: PayrollRun }) {
 
   return (
     <Card variant="gradient" className="p-1.5">
-      <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-7">
-        <div className="flex flex-wrap items-end justify-between gap-2">
-          <div>
+      <div className="rounded-[1.4rem] bg-[color:var(--surface)]/95 p-5 sm:p-7">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div className="min-w-0">
             <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">Last run</div>
             <h2 className="mt-1 font-serif text-2xl font-medium tracking-tight text-[color:var(--cream-200)]">
               {run.employer}
@@ -315,10 +389,11 @@ function RunReport({ run }: { run: PayrollRun }) {
               <span className="text-[color:var(--cream-200)] font-mono">{formatUsd(Number(run.totalUsdc))}</span>
             </p>
           </div>
-          <Badge tone="brand">{run.items.length} transfers · settled in seconds</Badge>
+          <Badge tone="brand" className="self-start sm:self-auto">{run.items.length} transfers · settled in seconds</Badge>
         </div>
 
-        <div className="mt-5 overflow-x-auto">
+        {/* Desktop: table */}
+        <div className="mt-5 hidden md:block">
           <table className="w-full text-sm">
             <thead className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--gold-500)]">
               <tr>
@@ -380,6 +455,60 @@ function RunReport({ run }: { run: PayrollRun }) {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile: stacked cards */}
+        <div className="mt-5 md:hidden space-y-3">
+          {run.items.map((it, i) => {
+            const liveStatus = live[it.circleTxId];
+            const state = liveStatus?.state ?? it.state;
+            const recipientExplorer = `https://testnet.arcscan.app/address/${it.address}`;
+            const txExplorer = liveStatus?.explorerUrl ?? null;
+            return (
+              <div
+                key={i}
+                className="rounded-2xl border border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 p-4 space-y-3"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-[color:var(--cream-200)] truncate">
+                      {it.contractorName}{' '}
+                      <span className="text-xs text-[color:var(--cream-500)]">
+                        {COUNTRIES[it.country as CorridorCode]?.flag}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="font-mono text-sm text-[color:var(--cream-200)] tabular shrink-0">
+                    {it.amountUsdc} <span className="text-[color:var(--gold-500)]">USDC</span>
+                  </div>
+                </div>
+                <AddressPill address={it.address} />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <TxStateBadge state={state} />
+                  {txExplorer ? (
+                    <a
+                      className="text-xs text-[color:var(--gold-300)] hover:underline inline-flex items-center gap-1"
+                      href={txExplorer}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      ArcScan tx <ExternalLink className="size-3" />
+                    </a>
+                  ) : it.circleTxId ? (
+                    <a
+                      className="text-xs text-[color:var(--cream-500)] hover:text-[color:var(--gold-300)] inline-flex items-center gap-1"
+                      href={recipientExplorer}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      view recipient <ExternalLink className="size-3" />
+                    </a>
+                  ) : null}
+                </div>
+                {it.error ? <div className="text-xs text-[color:var(--danger)]">{it.error}</div> : null}
+              </div>
+            );
+          })}
         </div>
       </div>
     </Card>

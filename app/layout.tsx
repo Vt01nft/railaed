@@ -30,19 +30,19 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col brand-grad relative">
         <header className="absolute top-0 inset-x-0 z-30">
-          <div className="mx-auto max-w-7xl flex items-center justify-between px-6 py-5">
+          <div className="mx-auto max-w-7xl flex items-center justify-between gap-2 px-4 sm:px-6 py-4 sm:py-5">
             {/* Left: logo (30% larger than xs, slow rotation) + tag pill */}
-            <div className="flex items-center gap-3">
-              <Link href="/" aria-label="RailAED home" className="flex items-center">
+            <div className="flex items-center gap-3 min-w-0">
+              <Link href="/" aria-label="RailAED home" className="flex items-center shrink-0">
                 <Logo size="sm" variant="mark" spin />
               </Link>
-              <Link href="/" className="pill-outline hidden sm:inline-flex">
+              <Link href="/" className="pill-outline hidden md:inline-flex">
                 <span className="text-[color:var(--cream-300)]">Stablecoin Remittance</span>
               </Link>
             </div>
 
             {/* Right: nav + sign-in */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               <NavChip href="/send">Send</NavChip>
               <NavChip href="/payroll">Payroll</NavChip>
               <SignInButton />

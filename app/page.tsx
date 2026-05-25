@@ -16,7 +16,7 @@ export default async function Home() {
   return (
     <div className="relative">
       {/* Hero. Centred "logotype" composition à la Smaragd */}
-      <section className="relative mx-auto max-w-6xl px-6 pt-12 pb-24 lg:pt-20 lg:pb-32">
+      <section className="relative mx-auto max-w-6xl px-5 sm:px-6 pt-10 pb-20 sm:pt-12 sm:pb-24 lg:pt-20 lg:pb-32">
         {/* Scallop badge: only on lg+, kept far enough from the centre to avoid clipping */}
         <div className="absolute left-8 top-32 text-[color:var(--gold-500)]/80 hidden lg:block">
           <ScallopBadge text={'MADE\nON ARC'} size={108} />
@@ -25,30 +25,30 @@ export default async function Home() {
         <div className="flex flex-col items-center text-center">
           <Logo size="xl" variant="stacked" spin />
 
-          <h1 className="mt-12 font-serif text-[2.75rem] sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.02] text-[color:var(--cream-200)] max-w-4xl">
+          <h1 className="mt-10 sm:mt-12 font-serif text-[2rem] sm:text-6xl lg:text-7xl font-medium tracking-tight leading-[1.05] sm:leading-[1.02] text-[color:var(--cream-200)] max-w-4xl">
             UAE to anywhere,<br />
             <span className="italic text-gold-bright">in seconds on Arc.</span>
           </h1>
-          <p className="mt-6 text-lg text-[color:var(--cream-400)] max-w-2xl leading-relaxed">
+          <p className="mt-5 sm:mt-6 text-base sm:text-lg text-[color:var(--cream-400)] max-w-2xl leading-relaxed">
             Pay in AED. Settle in USDC. Deliver to the seven biggest UAE-expat corridors with a live
             <span className="text-[color:var(--cream-200)]"> honesty score </span>
             beside every quote. Al Ansari, Wise, Western Union, Remitly.
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
+          <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center justify-center gap-3 w-full sm:w-auto max-w-xs sm:max-w-none">
             <Link
               href="/send"
-              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--gold-500)] text-[color:var(--surface-deep)] px-7 h-12 text-base font-medium shadow-[0_14px_40px_-14px_rgba(212,165,47,0.55)] hover:bg-[color:var(--gold-400)] transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-[color:var(--gold-500)] text-[color:var(--surface-deep)] px-7 h-12 text-base font-medium shadow-[0_14px_40px_-14px_rgba(212,165,47,0.55)] hover:bg-[color:var(--gold-400)] transition-colors"
             >
               Send a remittance
               <ArrowRight className="size-4" />
             </Link>
-            <Link href="/payroll" className="pill-outline h-12 px-6 text-base">
+            <Link href="/payroll" className="pill-outline h-12 px-6 text-base justify-center">
               Run payroll
             </Link>
           </div>
 
-          <div className="mt-12 grid grid-cols-3 gap-3 sm:gap-4 w-full max-w-xl">
+          <div className="mt-10 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full max-w-xs sm:max-w-xl">
             <Stat label="Settles in" value="≈2 sec" />
             <Stat label="Our fee" value="0.30%" />
             <Stat label="Chain" value="Arc · 5042002" mono />
@@ -57,25 +57,25 @@ export default async function Home() {
       </section>
 
       {/* Wallet card + features, now wired to live data */}
-      <section className="mx-auto max-w-6xl px-6 pb-20 grid lg:grid-cols-[1fr_1fr] gap-8 items-stretch">
+      <section className="mx-auto max-w-6xl px-5 sm:px-6 pb-20 grid lg:grid-cols-[1fr_1fr] gap-6 lg:gap-8 items-stretch">
         <Card variant="gradient" className="p-1.5">
-          <div className="rounded-[1.4rem] bg-[color:var(--surface)]/90 p-7 h-full">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="size-1.5 rounded-full bg-[color:var(--mint-300)] animate-pulse" />
-                <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)]">
+          <div className="rounded-[1.4rem] bg-[color:var(--surface)]/90 p-5 sm:p-7 h-full">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="size-1.5 shrink-0 rounded-full bg-[color:var(--mint-300)] animate-pulse" />
+                <span className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--gold-500)] truncate">
                   Treasury · live on Arc
                 </span>
               </div>
-              <Badge tone="gold">Owner wallet</Badge>
+              <Badge tone="gold" className="shrink-0">Owner wallet</Badge>
             </div>
 
             <div className="mt-7">
               <div className="text-[10px] uppercase tracking-[0.22em] text-[color:var(--cream-500)]">
                 Balance
               </div>
-              <div className="mt-2 flex items-baseline gap-2">
-                <span className="font-serif text-6xl font-medium tabular text-[color:var(--cream-200)] leading-none">
+              <div className="mt-2 flex items-baseline gap-2 flex-wrap">
+                <span className="font-serif text-5xl sm:text-6xl font-medium tabular text-[color:var(--cream-200)] leading-none">
                   {data.ownerUsdc.toFixed(2)}
                 </span>
                 <span className="text-xl text-[color:var(--gold-500)] font-medium font-serif">USDC</span>
