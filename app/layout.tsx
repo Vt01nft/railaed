@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
@@ -51,6 +51,17 @@ export const metadata: Metadata = {
       "Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds. Built for the Stablecoin Commerce Stack Challenge.",
   },
   robots: { index: true, follow: true },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#082822" },
+    { media: "(prefers-color-scheme: light)", color: "#082822" },
+  ],
+  colorScheme: "dark",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
