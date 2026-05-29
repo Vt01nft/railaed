@@ -44,4 +44,6 @@ next-env.d.ts
 /.railaed-state.json
 /data/
 
-.vercel
+# RailAED — demo video + voiceover script (submission artifacts, not source)
+/demo/
+/docs/NARRATION.txt
