@@ -81,9 +81,14 @@ export default function RootLayout({
               <Link href="/" aria-label="RailAED home" className="flex items-center shrink-0">
                 <Logo size="sm" variant="mark" spin />
               </Link>
-              <Link href="/" className="pill-outline hidden md:inline-flex">
-                <span className="text-[color:var(--cream-300)]">Stablecoin Remittance</span>
-              </Link>
+              {/* Hide on phones via a plain wrapper: Tailwind's `hidden` loses to the
+                  unlayered `.pill-outline { display:inline-flex }`, so toggling the pill
+                  directly wouldn't take effect — toggle a wrapper with no custom class. */}
+              <div className="hidden md:block">
+                <Link href="/" className="pill-outline">
+                  <span className="text-[color:var(--cream-300)]">Stablecoin Remittance</span>
+                </Link>
+              </div>
             </div>
 
             {/* Right: nav + sign-in */}
