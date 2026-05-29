@@ -4,7 +4,7 @@
  * For the testnet demo we treat 1 USDC == 1 USD.
  * AED↔USD comes from a free public rate API with a static fallback.
  *
- * Competitor fee data is illustrative and based on the RESEARCH.md table —
+ * Competitor fee data is illustrative and based on the RESEARCH.md table -
  * always verifiable, but not live-quoted (which would require partner APIs).
  */
 
@@ -37,7 +37,7 @@ export interface RailAedQuote {
   recipientUsdc: number; // == recipientUsd for testnet (1 USDC = 1 USD)
   settlementSeconds: number;
   destinationLocal: { currency: string; amount: number; rate: number };
-  /** Provenance of the FX leg — which rail produced the AED→USDC rate. */
+  /** Provenance of the FX leg - which rail produced the AED→USDC rate. */
   fx: {
     provider: 'circle-stablefx' | 'mock-stablefx';
     settlementTenor: SettlementTenor;
@@ -46,7 +46,7 @@ export interface RailAedQuote {
   };
 }
 
-const RAILAED_FEE_PCT = 0.003; // 0.3% — leaves room for gas (USDC-denominated on Arc) + margin
+const RAILAED_FEE_PCT = 0.003; // 0.3% - leaves room for gas (USDC-denominated on Arc) + margin
 const RAILAED_SETTLEMENT_SECONDS = 2;
 
 export async function quoteRailAed(senderAed: number, corridor: CorridorCode): Promise<RailAedQuote> {

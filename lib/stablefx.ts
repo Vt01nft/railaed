@@ -10,7 +10,7 @@
  *      can't be quoted on StableFX today regardless of access.
  *
  * So we ship the interface the hackathon brief asks for: a `StableFXClient`
- * with a `MockStableFXClient` (default — backed by a live FX oracle) and a
+ * with a `MockStableFXClient` (default - backed by a live FX oracle) and a
  * `LiveStableFXClient` stub that drops in once access + currency coverage land.
  * `getStableFXClient()` picks Live only when explicitly enabled, so the demo is
  * always honest about which rail produced the rate.

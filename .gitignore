@@ -40,10 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# RailAED — local state (claim/payroll cache, regenerated at runtime)
+# RailAED - local state (claim/payroll cache, regenerated at runtime)
 /.railaed-state.json
 /data/
 
-# RailAED — demo video + voiceover script (submission artifacts, not source)
+# RailAED - demo video + voiceover script (submission artifacts, not source)
 /demo/
 /docs/NARRATION.txt

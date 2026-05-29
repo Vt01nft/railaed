@@ -47,7 +47,7 @@ export async function GET() {
     checks.ownerUsdc = { ok: false, error: err instanceof Error ? err.message : String(err) };
   }
 
-  // Deployer EOA balance (also relevant — sometimes the JobEscrow holder).
+  // Deployer EOA balance (also relevant - sometimes the JobEscrow holder).
   try {
     const bal = await getUsdcBalance(env.arc.deployerAddress as `0x${string}`);
     checks.deployerUsdc = {

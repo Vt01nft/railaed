@@ -1,7 +1,7 @@
 /**
  * Countries supported as remittance destinations.
  *
- * Eight corridors are "featured" — they get their own tile in the picker
+ * Eight corridors are "featured" - they get their own tile in the picker
  * and richer metadata. The rest are accessible via the typeahead.
  *
  * `usdToLocalRate` is an approximate static mid-market rate, used only for
@@ -102,7 +102,7 @@ export function dialCodeFor(code: string): string {
   return DIAL_CODES[code] ?? '+';
 }
 
-/** Featured corridors only — rendered as picker tiles in this exact order. */
+/** Featured corridors only - rendered as picker tiles in this exact order. */
 export const CORRIDOR_LIST: Country[] = ['US', 'UK', 'CA', 'IN', 'NG', 'SG', 'ES', 'DE'].map(
   (k) => COUNTRIES[k]!
 );
@@ -112,7 +112,7 @@ export const CORRIDORS: Record<string, Country> = Object.fromEntries(
   CORRIDOR_LIST.map((c) => [c.code, c])
 );
 
-/** Every supported country, sorted alphabetically — for the typeahead. */
+/** Every supported country, sorted alphabetically - for the typeahead. */
 export const ALL_COUNTRIES: Country[] = Object.values(COUNTRIES).sort((a, b) =>
   a.country.localeCompare(b.country)
 );

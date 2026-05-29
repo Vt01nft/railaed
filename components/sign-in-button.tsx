@@ -79,7 +79,7 @@ export function SignInButton() {
       const raw = await res.text();
       let json: { txHash?: string; explorerUrl?: string; newBalance?: string; error?: string; hint?: string } = {};
       try { json = raw ? JSON.parse(raw) : {}; } catch { /* leave json empty */ }
-      if (!res.ok) throw new Error((json.hint ? `${json.error} — ${json.hint}` : json.error) ?? `faucet failed (HTTP ${res.status})`);
+      if (!res.ok) throw new Error((json.hint ? `${json.error} - ${json.hint}` : json.error) ?? `faucet failed (HTTP ${res.status})`);
       setFundResult({
         txHash: json.txHash ?? '',
         explorerUrl: json.explorerUrl ?? '',

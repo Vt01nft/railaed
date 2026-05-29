@@ -9,7 +9,7 @@ import { env } from './env';
 export const ARC_TESTNET_BLOCKCHAIN = 'ARC-TESTNET' as const;
 
 function shortName(refId: string): string {
-  // Keep wallet names short + alphanumeric — some Circle deployments reject
+  // Keep wallet names short + alphanumeric - some Circle deployments reject
   // colons or long strings in the name field.
   return refId.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 50);
 }
@@ -34,7 +34,7 @@ export interface CreatedWallet {
 
 /**
  * Create a single wallet on Arc testnet, scoped to our wallet set.
- * Arc currently supports EOA (the SDK default) — SCA returns "API parameter invalid".
+ * Arc currently supports EOA (the SDK default) - SCA returns "API parameter invalid".
  * Metadata "name" must be a simple human label; refId is fine for tracking.
  */
 export async function createWallet(refId?: string): Promise<CreatedWallet> {
@@ -109,7 +109,7 @@ export interface OwnerTransaction {
   refId?: string;
   createDate: string;
   updateDate: string;
-  /** Best-effort label parsed from refId — "transfer" or "payroll" or null. */
+  /** Best-effort label parsed from refId - "transfer" or "payroll" or null. */
   kind: 'transfer' | 'payroll' | 'other';
 }
 
@@ -135,11 +135,11 @@ function classifyRefId(refId?: string): OwnerTransaction['kind'] {
  * Lists transactions for an arbitrary set of wallet ids (newest first, deduped).
  * Used to fold in the signed-in user's own wallet alongside the treasury feed.
  *
- * Circle's listTransactions does NOT echo `refId` (verified empirically — the
+ * Circle's listTransactions does NOT echo `refId` (verified empirically - the
  * field is in the OpenAPI Transaction schema but the response omits it). To
  * get usable kind labels we backfill in parallel from `getTransaction`, which
  * does return refId. Bounded by the list page size, so worst case 25 extra
- * calls per refresh — fine at hackathon scale.
+ * calls per refresh - fine at hackathon scale.
  */
 export async function listWalletTransactions(
   walletIds: string[],

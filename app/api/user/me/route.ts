@@ -14,7 +14,7 @@ export async function GET() {
     const raw = await getUsdcBalance(session.address as `0x${string}`);
     balanceUsdc = usdcToHuman(raw);
   } catch {
-    /* rpc blip — return 0 */
+    /* rpc blip - return 0 */
   }
   return NextResponse.json({
     ok: true,

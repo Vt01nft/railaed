@@ -1,7 +1,7 @@
-# RailAED — Research Dossier
+# RailAED - Research Dossier
 
 **Hackathon:** [Stablecoin Commerce Stack Challenge](https://challenges.ignyte.ae/competition/4B436318-C737-F111-9A49-6045BD14D400) (Ignyte × Circle × Arc, 3-month virtual program)
-**Track:** Track 1 — Best Cross-Border Payments & Remittances Experience (UAE → Global)
+**Track:** Track 1 - Best Cross-Border Payments & Remittances Experience (UAE → Global)
 **Prizes:** 5,000 USDC (1st), 3,000 USDC (2nd)
 **Research date:** 2026-05-20
 **Status legend:** `[V]` = verified from primary docs/source. `[I]` = inferred or cross-referenced, needs check. `[?]` = couldn't fully verify, see linked URL.
@@ -14,7 +14,7 @@ Arc is Circle's purpose-built, EVM-compatible Layer-1 designed as the settlement
 
 | Item | Value | Source |
 |---|---|---|
-| Status | **Public testnet** (mainnet planned **summer 2026**) | `[V]` [Circle press release — Arc Public Testnet](https://www.circle.com/pressroom/circle-launches-arc-public-testnet); [Phemex on whitepaper](https://phemex.com/news/article/circle-unveils-arc-blockchain-whitepaper-mainnet-launch-set-for-summer-2026-82817) |
+| Status | **Public testnet** (mainnet planned **summer 2026**) | `[V]` [Circle press release - Arc Public Testnet](https://www.circle.com/pressroom/circle-launches-arc-public-testnet); [Phemex on whitepaper](https://phemex.com/news/article/circle-unveils-arc-blockchain-whitepaper-mainnet-launch-set-for-summer-2026-82817) |
 | Testnet launch date | **October 28, 2025** | `[V]` Circle press release above |
 | Testnet activity | 244.1M txs as of May 5, 2026 | `[I]` per search snippet |
 | **Testnet Chain ID** | **`5042002`** | `[V]` [docs.arc.io connect-to-arc](https://docs.arc.io/arc/references/connect-to-arc) |
@@ -29,11 +29,11 @@ Arc is Circle's purpose-built, EVM-compatible Layer-1 designed as the settlement
 | Finality | **Deterministic, sub-second** (benchmarked < 350 ms with 20 validators); **no reorg risk** | `[V]` system-overview |
 | Throughput | **3,000+ TPS** benchmark | `[V]` |
 | EVM hard fork target | **Prague** (latest) | `[V]` [docs.arc.io evm-compatibility](https://docs.arc.io/arc/references/evm-compatibility) |
-| Validator model | **Proof-of-Authority** — permissioned set of regulated institutions | `[V]` system-overview |
-| **Gas/fee token** | **USDC (18-decimal denomination)** — there is no separate gas token; fees paid in USDC | `[V]` evm-compatibility + connect-to-arc |
+| Validator model | **Proof-of-Authority** - permissioned set of regulated institutions | `[V]` system-overview |
+| **Gas/fee token** | **USDC (18-decimal denomination)** - there is no separate gas token; fees paid in USDC | `[V]` evm-compatibility + connect-to-arc |
 | Fee model | EWMA-smoothed base fee (EIP-1559-inspired but bounded/stable) | `[V]` |
 | Notable EVM diffs | `SELFDESTRUCT` disabled at deploy; `PREV_RANDAO` always returns 0; EIP-4844 blobs disabled; block timestamps in seconds (multiple blocks may share); `PARENT_BEACON_BLOCK_ROOT` returns parent exec-payload hash | `[V]` evm-compatibility |
-| Privacy feature | **ArcaneVM** — confidential Solidity execution, **status: planned, not live** | `[V]` system-overview |
+| Privacy feature | **ArcaneVM** - confidential Solidity execution, **status: planned, not live** | `[V]` system-overview |
 
 ### Key Arc testnet contract addresses (Domain ID 26)
 Source: `[V]` [docs.arc.io contract-addresses](https://docs.arc.io/arc/references/contract-addresses)
@@ -57,7 +57,7 @@ Source: `[V]` [docs.arc.io contract-addresses](https://docs.arc.io/arc/reference
 3. Standard Hardhat/Foundry/Reth tooling works (Prague-compatible). Tooling integrations: Alchemy, Chainlink, Thirdweb, MetaMask, Claude Agent SDK. `[I]` per [arc.io blog](https://www.arc.io/blog/circle-launches-arc-public-testnet)
 4. Sample apps live under [github.com/circlefin](https://github.com/circlefin): `arc-node`, `arc-p2p-payments`, `arc-escrow`, `arc-prediction-markets`. `[V]`
 
-> **Conflict to flag:** mainnet timing — multiple sources say "summer 2026" (whitepaper) but Circle has not given a firm date. Assume **testnet-only for the demo**.
+> **Conflict to flag:** mainnet timing - multiple sources say "summer 2026" (whitepaper) but Circle has not given a firm date. Assume **testnet-only for the demo**.
 
 ---
 
@@ -66,16 +66,16 @@ Source: `[V]` [docs.arc.io contract-addresses](https://docs.arc.io/arc/reference
 Circle's wallet-as-a-service offering, designed so non-crypto users never see seed phrases.
 
 ### Wallet models `[V]` [developers.circle.com/wallets](https://developers.circle.com/wallets)
-- **Developer-Controlled Wallets** — Circle/your backend signs. Best for payouts, automation, server-initiated treasury moves. Good fit for the **payroll / treasury** side of RailAED.
-- **User-Controlled Wallets** — end-user holds a key share (MPC). Standard product, requires SDK on the client.
-- **Modular Wallets** — **ERC-4337 smart accounts with passkey signing** and **gas sponsorship via paymaster**. The newest, best UX for consumer onboarding. Documented in `circlefin/skills/plugins/circle/skills/use-modular-wallets`. `[V]`
+- **Developer-Controlled Wallets** - Circle/your backend signs. Best for payouts, automation, server-initiated treasury moves. Good fit for the **payroll / treasury** side of RailAED.
+- **User-Controlled Wallets** - end-user holds a key share (MPC). Standard product, requires SDK on the client.
+- **Modular Wallets** - **ERC-4337 smart accounts with passkey signing** and **gas sponsorship via paymaster**. The newest, best UX for consumer onboarding. Documented in `circlefin/skills/plugins/circle/skills/use-modular-wallets`. `[V]`
 
 ### SDKs `[V]`
 - Web SDK (browser, TypeScript)
-- iOS SDK (Swift) — see `circlefin/w3s-ios-sample-app-wallets`
+- iOS SDK (Swift) - see `circlefin/w3s-ios-sample-app-wallets`
 - Android SDK
 - Node.js / REST (server)
-- **No official React Native SDK** per current docs — use Web SDK in a WebView or call REST from a RN bridge. `[I]`
+- **No official React Native SDK** per current docs - use Web SDK in a WebView or call REST from a RN bridge. `[I]`
 
 ### Auth options `[V]` ([Create User Wallets with Social Login](https://developers.circle.com/wallets/user-controlled/create-user-wallets-with-social-login))
 - **Passkeys** (Modular Wallets, WebAuthn)
@@ -101,22 +101,22 @@ Circle's wallet-as-a-service offering, designed so non-crypto users never see se
 
 ## 3. CCTP V2 + Bridge Kit
 
-### CCTP V2 — what V2 adds over V1
+### CCTP V2 - what V2 adds over V1
 Source: `[V]` [Circle CCTP V2 blog](https://www.circle.com/blog/cctp-v2-the-future-of-cross-chain), [V2 whitepaper PDF](https://6778953.fs1.hubspotusercontent-na1.net/hubfs/6778953/PDFs/Whitepapers/CCTPV2_White_Paper.pdf)
-- **Fast Transfer** — Circle fronts liquidity to mint on destination *before* source finality. **~8–20 seconds** vs. **15–19 min** standard. Opt-in, pays a small fee.
-- **Hooks** — bundle a destination-chain action (swap, deposit, payout) with the mint via a single call. Critical for one-tap UX.
+- **Fast Transfer** - Circle fronts liquidity to mint on destination *before* source finality. **~8–20 seconds** vs. **15–19 min** standard. Opt-in, pays a small fee.
+- **Hooks** - bundle a destination-chain action (swap, deposit, payout) with the mint via a single call. Critical for one-tap UX.
 - V1 is being deprecated; V2 is canonical. `[V]` [CCTP V1 deprecation post](https://www.circle.com/blog/cctp-version-updates)
 
 ### Supported chains (mainnet, as of CCTP V2 supported-chains page) `[V]`
 [developers.circle.com/cctp/concepts/supported-chains-and-domains](https://developers.circle.com/cctp/concepts/supported-chains-and-domains)
 25 mainnets: Ethereum (0), Avalanche (1), OP (2), Arbitrum (3), Solana (5), Base (6), Polygon (7), Unichain (10), Linea (11), Codex (12), Sonic (13), World Chain (14), Monad (15), Sei (16), BNB (17), XDC (18), HyperEVM (19), Ink (21), Plume (22), Starknet (25), Stellar (27), EDGE (28), Injective (29), Morph (30), Pharos (31).
-**Arc** is on the list as **Testnet, domain `26`** — not yet mainnet (mainnet would launch with Arc mainnet). `[V]`
+**Arc** is on the list as **Testnet, domain `26`** - not yet mainnet (mainnet would launch with Arc mainnet). `[V]`
 
 ### Bridge Kit `[V]` [Circle blog](https://www.circle.com/blog/introducing-bridge-kit-build-crosschain-apps-faster), [docs.arc.io/app-kit/bridge](https://docs.arc.io/app-kit/bridge)
 - npm package: `@circle-fin/bridge-kit` (plus adapter packages)
 - Adapters: `@circle-fin/adapter-viem-v2`, `@circle-fin/adapter-ethers-v6`, `@circle-fin/adapter-solana-kit`, `@circle-fin/adapter-circle-wallets`
-- One call: `kit.bridge({ from, to, amount })` — handles approve → burn → attestation poll → mint.
-- Built-in **monetization** — devs can configure a per-transfer fee that accrues to them. `[V]` (crypto.news + Circle blog)
+- One call: `kit.bridge({ from, to, amount })` - handles approve → burn → attestation poll → mint.
+- Built-in **monetization** - devs can configure a per-transfer fee that accrues to them. `[V]` (crypto.news + Circle blog)
 - **Open access, no sign-up.** `[V]`
 - When to use vs. raw CCTP: **always use Bridge Kit** unless you need custom Hooks orchestration that the SDK doesn't expose.
 
@@ -136,16 +136,16 @@ A **unified cross-chain USDC balance** + sub-500ms minting. Distinct from CCTP (
 ### vs. CCTP, vs. Wallets
 - **CCTP** = move USDC chain A → chain B *now* (burn + mint, 8-20s fast). Stateless.
 - **Gateway** = deposit once, *front-load finality*, then spend instantly from a unified balance later. Stateful (offchain ledger).
-- **Wallets** = the user-facing custody/UX layer. Orthogonal — Gateway/CCTP operate on USDC owned by any wallet.
+- **Wallets** = the user-facing custody/UX layer. Orthogonal - Gateway/CCTP operate on USDC owned by any wallet.
 
 ### API surface `[V]` technical guide
-- `POST /v1/transfer` — submit signed burn intent(s), get attestation. Up to 16 intents per request.
-- `GET /v1/balances` — query unified balance.
-- `GET /v1/deposits` — pending unfinalized deposits.
+- `POST /v1/transfer` - submit signed burn intent(s), get attestation. Up to 16 intents per request.
+- `GET /v1/balances` - query unified balance.
+- `GET /v1/deposits` - pending unfinalized deposits.
 - On-chain: `deposit`, `depositFor`, `depositWithPermit`, `depositWithAuthorization`, `addDelegate`, `initiateWithdrawal`, `withdraw`.
 
 ### Eligibility
-- **Permissionless** — no sign-up needed to integrate. `[V]`
+- **Permissionless** - no sign-up needed to integrate. `[V]`
 - Works on Arc testnet (contracts deployed, see section 1). `[V]`
 
 ### Use cases for RailAED
@@ -164,11 +164,11 @@ A **unified cross-chain USDC balance** + sub-500ms minting. Distinct from CCTP (
 - Permissionless; requires a funded Gateway balance.
 
 ### Chain support `[V]` (search snippet from Circle docs)
-Arbitrum, **Arc**, Avalanche, Base, Ethereum, HyperEVM, Optimism, Polygon PoS, Sei, Sonic, Unichain, World Chain — **testnet only** at present.
+Arbitrum, **Arc**, Avalanche, Base, Ethereum, HyperEVM, Optimism, Polygon PoS, Sei, Sonic, Unichain, World Chain - **testnet only** at present.
 
 ### Useful for RailAED?
-- **Direct fit for remittance/payroll? No** — it's framed for AI-agent M2M payments and pay-per-use.
-- **Stretch fit (high "wow" value):** **streaming payroll** — pay a freelancer $0.001/second of work logged. Sub-cent throughput + instant settlement = a credible demo of the future of work that no other payroll tool can do. **Differentiator candidate.**
+- **Direct fit for remittance/payroll? No** - it's framed for AI-agent M2M payments and pay-per-use.
+- **Stretch fit (high "wow" value):** **streaming payroll** - pay a freelancer $0.001/second of work logged. Sub-cent throughput + instant settlement = a credible demo of the future of work that no other payroll tool can do. **Differentiator candidate.**
 
 ### Status
 - **Testnet, permissionless.** No waitlist. Useable today in a hackathon demo. `[V]`
@@ -191,14 +191,14 @@ Partner stablecoins announced (designed to interoperate via StableFX):
 
 ### How it helps "pay-in-AED → settle-USDC → payout-INR/PHP/PKR"
 - For **PHP**: StableFX swaps USDC ↔ PHPC on Arc, then PHPC is bridged/off-ramped locally.
-- For **INR/PKR/EGP/BDT/NPR/LKR**: no on-Arc FX leg available today — must use a 3rd-party off-ramp partner (see §10).
+- For **INR/PKR/EGP/BDT/NPR/LKR**: no on-Arc FX leg available today - must use a 3rd-party off-ramp partner (see §10).
 - The "AED in" leg is the bigger problem: there is **no AED stablecoin in StableFX today**. AE Coin exists (CBUAE-licensed, RAKBank-backed) but isn't a StableFX partner. `[V]` ([CCN on RAKBank](https://www.ccn.com/news/crypto/rakbank-wins-aed-approval-digital-dirham-aed-stablecoin/))
 
 ### How to request access `[V]`
 - Form: `https://www.circle.com/join-stablefx`
 - Email: `customer-support@circle.com`, subject line **"Circle Hackathon - USYC or StableFX testnet request"** (per hackathon instructions).
 - Approval flow: KYB → TEST API key (Arc testnet) → eventually LIVE.
-- "Institutional gating" exists, but **hackathon path is documented** and Circle has approved hackathon participants for testnet in past events (e.g., ETHGlobal HackMoney 2026 — `arctan(x)` won using StableFX). `[V]` [HackMoney 2026 winners](https://www.arc.io/blog/meet-the-arc-track-winners-from-the-hackmoney-2026-hackathon-and-what-we-learned)
+- "Institutional gating" exists, but **hackathon path is documented** and Circle has approved hackathon participants for testnet in past events (e.g., ETHGlobal HackMoney 2026 - `arctan(x)` won using StableFX). `[V]` [HackMoney 2026 winners](https://www.arc.io/blog/meet-the-arc-track-winners-from-the-hackmoney-2026-hackathon-and-what-we-learned)
 
 ### Penalty for not getting access?
 - **No explicit penalty**, but using more Circle products = higher "integration quality" score. Submit the request **immediately** (today). If denied/delayed, fall back to a simulated FX oracle for the demo with code paths wired so StableFX can drop in.
@@ -223,19 +223,19 @@ Partner stablecoins announced (designed to interoperate via StableFX):
 
 ### Fixed-fee model (post 2025 increases)
 - Exchange houses now charge **AED 22 + 5% VAT** per transaction to India/Philippines. `[V]` [Gulf News](https://gulfnews.com/amp/story/business/banking/uaes-15-remittance-fee-hike-will-more-residents-switch-to-digital-when-sending-money-1.1712291315289)
-- Pakistan: AED 22 charged to exchange house but **reimbursed by State Bank of Pakistan** — customer pays nothing. `[V]`
+- Pakistan: AED 22 charged to exchange house but **reimbursed by State Bank of Pakistan** - customer pays nothing. `[V]`
 - 15% fee hike at exchange houses **already pushing users to digital**. `[V]` Visa: nearly 2 in 3 UAE residents now prefer digital remittance apps.
 
 ### Top pain points expats face `[V]` [Visa newsroom](https://ae.visamiddleeast.com/en_AE/about-visa/newsroom/press-releases/prl-10092025.html), [Khaleej Times](https://www.khaleejtimes.com/business/finance/uae-expats-increasingly-drive-shift-to-digital-remittances)
-1. **High fees** — 32% of senders cite this as #1 pain.
+1. **High fees** - 32% of senders cite this as #1 pain.
 2. **Opaque FX rates** (provider-favourable margins).
 3. **Long queues** at physical exchange houses.
-4. **Speed** — bank transfers still take 1–3 business days.
-5. **Beneficiary friction** — recipient often must visit a branch to collect cash (esp. PKR, EGP, NPR corridors).
+4. **Speed** - bank transfers still take 1–3 business days.
+5. **Beneficiary friction** - recipient often must visit a branch to collect cash (esp. PKR, EGP, NPR corridors).
 
 ### AED on-ramp / off-ramp realities
-- **Banks** (Emirates NBD, ADCB, DIB, FAB) — wire transfers + remit-specific products (DirectRemit). Account required.
-- **Exchange houses** — Al Ansari, LuLu Exchange/LuLu Money, UAE Exchange, GCC Exchange, Sharaf Exchange. Physical and increasingly digital apps. Strong agent network in destination countries.
+- **Banks** (Emirates NBD, ADCB, DIB, FAB) - wire transfers + remit-specific products (DirectRemit). Account required.
+- **Exchange houses** - Al Ansari, LuLu Exchange/LuLu Money, UAE Exchange, GCC Exchange, Sharaf Exchange. Physical and increasingly digital apps. Strong agent network in destination countries.
 - **Crypto on-ramp**: licensed UAE crypto firms (BitOasis, Rain, CoinMENA, Binance UAE) allow AED → USDC/USDT. VARA-licensed.
 - **AED stablecoin**: **AE Coin** (issued by AED Stablecoin LLC, in partnership with **RAKBank** and Fuze) is the first CBUAE-licensed dirham stablecoin (full license Dec 11, 2024). `[V]` [Mondaq](https://www.mondaq.com/fin-tech/1577210/uaes-groundbreaking-approval-of-ae-coin-a-new-era-for-dirham-backed-stablecoins). **Tether** also announced an AED stablecoin via Phoenix Group / Green Acorn. `[V]`
 
@@ -243,15 +243,15 @@ Partner stablecoins announced (designed to interoperate via StableFX):
 
 ## 8. UAE Regulatory Landscape
 
-### Federal — CBUAE Payment Token Services Regulation (PTSR) `[V]` [CBUAE Rulebook](https://rulebook.centralbank.ae/en/rulebook/payment-token-services-regulation), [Regulation Tomorrow analysis](https://www.regulationtomorrow.com/dubai-and-saudi/cbuae-payment-token-services-regulation/)
+### Federal - CBUAE Payment Token Services Regulation (PTSR) `[V]` [CBUAE Rulebook](https://rulebook.centralbank.ae/en/rulebook/payment-token-services-regulation), [Regulation Tomorrow analysis](https://www.regulationtomorrow.com/dubai-and-saudi/cbuae-payment-token-services-regulation/)
 - Issued **June 7, 2024**, in force **July 6, 2024**, one-year transition **ended June 2025**.
 - Defines three services: **Issuance, Conversion, Custody & Transfer**.
-- **Dirham Payment Token** (AED-pegged) — **full CBUAE license required**.
-- **Foreign Payment Token** (e.g., USDC) — **registration with CBUAE required** to be used as means of payment within UAE.
+- **Dirham Payment Token** (AED-pegged) - **full CBUAE license required**.
+- **Foreign Payment Token** (e.g., USDC) - **registration with CBUAE required** to be used as means of payment within UAE.
 - Issuer reserves: **100% in liquid HQLA, ≥ 50% as cash in UAE banks**; **par redemption within 1 business day**.
 - **USDC for AED payment-acceptance**: Circle would need (or partner with someone who has) PTSR registration. As of May 2026, **USDC is widely traded/held in UAE but its use as a domestic payment means is regulated**. For **outbound remittance** (the RailAED use case), this is generally OK because settlement happens off-shore in USDC and the AED leg goes through licensed banks / exchange houses, not via "paying with USDC in UAE." `[I]` Verify with legal before any production launch.
 
-### Dubai — VARA `[V]` [Pinsent Masons](https://www.pinsentmasons.com/out-law/news/dubais-move-oversee-stablecoins-bring-certainty-regulatory-grey-area), [CoinEdition March 2025](https://coinedition.com/dubai-releases-updated-guidelines-for-rwa-and-stablecoin-issuance/)
+### Dubai - VARA `[V]` [Pinsent Masons](https://www.pinsentmasons.com/out-law/news/dubais-move-oversee-stablecoins-bring-certainty-regulatory-grey-area), [CoinEdition March 2025](https://coinedition.com/dubai-releases-updated-guidelines-for-rwa-and-stablecoin-issuance/)
 - **March 2025**: VARA issued FRVA/ARVA guidelines. Fiat-pegged stablecoins (USDC equivalents) = **Category 1 FRVA**, require **full VARA license + whitepaper approval**.
 - One-year transition until **Sept 2026** for crypto firms targeting UAE users to license/partner/exit.
 - **Retail USDC use** is allowed via VARA-licensed VASPs.
@@ -285,7 +285,7 @@ Partner stablecoins announced (designed to interoperate via StableFX):
 | **Bitnob** | Africa-focused, USDT + BTC, Lightning rails to NGN/KES/GHS/ZAR | `[?]` not strongly returned in search; verify at [bitnob.com](https://bitnob.com) |
 | **MoneyGram + Stellar** | USDC over Stellar, off-ramps via agents | `[I]` |
 | **Strike** | Bitcoin Lightning remit (USA→PHP/AFR); not USDC | `[I]` |
-| **Bitso Business** | Powers Felix Pago and others — 10% of US-MX remit corridor on stablecoins | `[V]` [Stellar case study](https://stellar.org/case-studies/felix-bitso) |
+| **Bitso Business** | Powers Felix Pago and others - 10% of US-MX remit corridor on stablecoins | `[V]` [Stellar case study](https://stellar.org/case-studies/felix-bitso) |
 | **Felix Pago** | WhatsApp-native US→LATAM remit via USDC+Bitso; **$3B volume**, 30% MoM growth since Stripe partnership | `[V]` [Stripe customer page](https://stripe.com/customers/felix) |
 | **CrossFi** | Stablecoin payment card / app; consumer | `[?]` couldn't verify recent UAE activity |
 | **Beam** | Stablecoin remit (SE Asia focus); details unclear | `[?]` |
@@ -293,27 +293,27 @@ Partner stablecoins announced (designed to interoperate via StableFX):
 | **Fasset** | UAE-based Islamic-finance stablecoin app | `[V]` [fasset.com](https://www.fasset.com/) |
 
 ### Traditional UAE remittance players
-- **LuLu Exchange / LuLu Money** — strong digital app, agent network across Asia
-- **Al Ansari Exchange** — largest UAE exchange house, listed on DFM, ~1.83% on UAE→IN
+- **LuLu Exchange / LuLu Money** - strong digital app, agent network across Asia
+- **Al Ansari Exchange** - largest UAE exchange house, listed on DFM, ~1.83% on UAE→IN
 - **UAE Exchange** (Unimoni)
-- **Western Union** — global brand, 1.59% on UAE→IN
-- **MoneyGram** — 2.48%; using Stellar for USDC settlement under the hood
-- **Wise** (TransferWise) — digital-first, ~AED 18 fixed fee, 64% of transfers under 20 sec
-- **Remitly** — top-rated by Monito 2025, 1.04% on UAE→IN
-- **Emirates NBD / DirectRemit** — cheapest at 0.77%, requires a bank account
+- **Western Union** - global brand, 1.59% on UAE→IN
+- **MoneyGram** - 2.48%; using Stellar for USDC settlement under the hood
+- **Wise** (TransferWise) - digital-first, ~AED 18 fixed fee, 64% of transfers under 20 sec
+- **Remitly** - top-rated by Monito 2025, 1.04% on UAE→IN
+- **Emirates NBD / DirectRemit** - cheapest at 0.77%, requires a bank account
 
 ### Gaps a hackathon MVP can credibly fill
-1. **No UAE-resident-focused stablecoin remit product** — Sling/Felix are US/LATAM-centric. The UAE expat audience (Indians, Pakistanis, Filipinos, Egyptians, Bangladeshis) is underserved by crypto-native UX.
-2. **No multi-corridor payroll product for UAE-based SMEs paying global contractors** — Deel/Rise focus on US/EU employers. UAE SMEs with 5–50 global contractors have no clean stablecoin solution.
+1. **No UAE-resident-focused stablecoin remit product** - Sling/Felix are US/LATAM-centric. The UAE expat audience (Indians, Pakistanis, Filipinos, Egyptians, Bangladeshis) is underserved by crypto-native UX.
+2. **No multi-corridor payroll product for UAE-based SMEs paying global contractors** - Deel/Rise focus on US/EU employers. UAE SMEs with 5–50 global contractors have no clean stablecoin solution.
 3. **No product unifies sender-side simplicity (no crypto knowledge) with recipient-side flexibility (claim to bank, mobile money, UPI, or hold as USDC).**
-4. **Streaming payroll for freelancers** — nobody offers per-second salary streaming for hourly contractors. Nanopayments + Arc enables this.
-5. **AED-anchored UX** — every quote, dashboard, and confirmation in dirhams (not USD). Trivial but missing.
+4. **Streaming payroll for freelancers** - nobody offers per-second salary streaming for hourly contractors. Nanopayments + Arc enables this.
+5. **AED-anchored UX** - every quote, dashboard, and confirmation in dirhams (not USD). Trivial but missing.
 
 ### Wow features that differentiate
-- **One-tap "send WhatsApp link"** — recipient claims via phone number + passkey (no app install).
-- **Real-time FX honesty score** — compare RailAED's USDC route vs. Al Ansari/Wise/WU live (use the World Bank API).
-- **Per-second streaming payroll** — Nanopayments demo on Arc.
-- **AED-denominated UI with on-chain proof** — every transaction has a [testnet.arcscan.app](https://testnet.arcscan.app) link.
+- **One-tap "send WhatsApp link"** - recipient claims via phone number + passkey (no app install).
+- **Real-time FX honesty score** - compare RailAED's USDC route vs. Al Ansari/Wise/WU live (use the World Bank API).
+- **Per-second streaming payroll** - Nanopayments demo on Arc.
+- **AED-denominated UI with on-chain proof** - every transaction has a [testnet.arcscan.app](https://testnet.arcscan.app) link.
 
 ---
 
@@ -335,7 +335,7 @@ Partner stablecoins announced (designed to interoperate via StableFX):
 3. Three claim options:
     - **Bank account** (collect IBAN/IFSC/SWIFT, log to backend; "demo: simulated off-ramp via Onramp.money API key").
     - **Mobile money** (UPI ID / bKash / GCash number; simulated payout).
-    - **Hold as USDC** on Arc (creates a Modular Wallet via Circle Wallets for them — real on-chain transfer to a new SCA).
+    - **Hold as USDC** on Arc (creates a Modular Wallet via Circle Wallets for them - real on-chain transfer to a new SCA).
 4. For the judge demo: pre-populate the Coinbase USDC→INR off-ramp screenshot to show production path, but use the **"Hold as USDC"** path live to demonstrate real on-chain settlement.
 
 ---
@@ -371,7 +371,7 @@ Per the challenge page and standard Circle hackathon practice `[V]` + `[I]`:
 3. **Video demo** (≤ 5 min typical) demonstrating an end-to-end USDC transaction via Arc + Circle infra, with explorer verification.
 4. **Public GitHub repo** with full setup docs (README, env vars, run commands).
 5. **Live demo URL** (Vercel preview).
-6. **Circle Product Feedback** section — what worked, what didn't, what's missing. (Judges weight this heavily — Circle's PMs read it.)
+6. **Circle Product Feedback** section - what worked, what didn't, what's missing. (Judges weight this heavily - Circle's PMs read it.)
 7. State the **specific track** entered (here: **Track 1: Cross-Border Payments & Remittances**).
 8. Per related hackathons, demos should show **real per-action pricing**, **transaction frequency data** (50+ on-chain txs), and an explanation of why the model would fail with traditional gas. `[I]` from search snippet.
 
@@ -380,22 +380,22 @@ Per the challenge page and standard Circle hackathon practice `[V]` + `[I]`:
 | Winner | Track | Stack | Why it won |
 |---|---|---|---|
 | **arctan(x)** | Chain-Abstracted USDC Apps | Arc + Circle Wallets + Gateway + Bridge Kit + StableFX | Used **5 Circle products together**; institutional FX DEX |
-| **Text-to-Chain** | (same) | Dev-Controlled Wallets on Arc + CCTP | **SMS as the interface** — dramatic UX simplification |
-| **ArcFlow** | Global Payouts & Treasury | Arc + Gateway + USDC | Self-paying treasury — invests idle payroll into yield then pays |
+| **Text-to-Chain** | (same) | Dev-Controlled Wallets on Arc + CCTP | **SMS as the interface** - dramatic UX simplification |
+| **ArcFlow** | Global Payouts & Treasury | Arc + Gateway + USDC | Self-paying treasury - invests idle payroll into yield then pays |
 | **Versus** | Agentic Commerce on RWAs | Circle Wallets + Arc + Gateway | AI agents earning + trading creator tokens |
 
 **Honorable mentions** all shared a theme: take a **boring real business problem** (escrow, payroll, POS, charity, construction milestones) and replace its rails with stablecoin infra, **hiding the chain entirely from end users**.
 
 ### Judging criteria (extracted) `[V]`
-- **Technical execution** — does it work end-to-end?
-- **Product utility** — solves a real problem?
-- **Integration quality** — number and depth of Circle products integrated.
-- **Polish** — invisible-chain UX, mobile-friendly.
+- **Technical execution** - does it work end-to-end?
+- **Product utility** - solves a real problem?
+- **Integration quality** - number and depth of Circle products integrated.
+- **Polish** - invisible-chain UX, mobile-friendly.
 
 ### Tactical takeaways for RailAED
 1. **Integrate 4+ Circle products** (Wallets, CCTP/Bridge Kit, Gateway, Nanopayments; StableFX if access granted).
-2. **Hide the chain entirely** — never show a hex address in the main UI. Use passkeys, phone numbers, email.
-3. **Solve a boring problem really well** — remittance is boring; that's the point.
+2. **Hide the chain entirely** - never show a hex address in the main UI. Use passkeys, phone numbers, email.
+3. **Solve a boring problem really well** - remittance is boring; that's the point.
 4. **Write a strong Circle Product Feedback section** with at least 3 concrete pain points or feature requests.
 
 ---
@@ -409,7 +409,7 @@ Per the challenge page and standard Circle hackathon practice `[V]` + `[I]`:
 | Styling | **Tailwind CSS + shadcn/ui** | Matches Circle sample; fast |
 | Auth (consumer) | **Circle Modular Wallets** (passkey) + **Google OAuth** fallback | Zero-crypto-knowledge onboarding |
 | Auth (employer) | Clerk via Vercel Marketplace OR Circle Modular Wallet with email OTP | Workspace-level access control |
-| DB | **Supabase** (Postgres) — RLS for multi-tenant payroll | Matches sample; free tier |
+| DB | **Supabase** (Postgres) - RLS for multi-tenant payroll | Matches sample; free tier |
 | Backend payments | **Circle REST API** (developer-controlled wallets) | For server-initiated treasury & payroll |
 | Cross-chain | **Bridge Kit** (`@circle-fin/bridge-kit`) + adapter-viem-v2 | One-call CCTP V2 |
 | Treasury | **Circle Gateway** (`@circle-fin/unified-balance-kit`) | Unified balance across Arc + Base + Ethereum |
@@ -442,7 +442,7 @@ Per the challenge page and standard Circle hackathon practice `[V]` + `[I]`:
 2. Mini-app opens → "You received 250 USDC ≈ ₹20,820"
 3. Three claim options:
     a. Bank → UPI/IMPS (DEMO: simulated via Onramp.money; PROD: real off-ramp)
-    b. Mobile money (GCash / bKash / Easypaisa) — same
+    b. Mobile money (GCash / bKash / Easypaisa) - same
     c. Hold as USDC → creates Circle Modular Wallet for them (passkey on their device)
 4. If "Hold", real USDC transfer on Arc with explorer proof
 5. Confirmation + savings summary: "You saved AED 12 vs Al Ansari"
@@ -462,17 +462,17 @@ Per the challenge page and standard Circle hackathon practice `[V]` + `[I]`:
 ### Three "wow" features for the judge demo
 1. **Streaming payroll via Nanopayments.** Toggle on a contractor's profile: *"Pay per second worked"*. Their dashboard ticks up in real time as their work timer runs. Demonstrate 1,000+ Nanopayment txs in 5 minutes. **No other remit/payroll product can do this today.** This directly targets the hackathon's "50+ on-chain txs" + "explain why traditional gas would fail" criteria.
 
-2. **"Honesty score" — live competitive FX widget.** On the send screen, RailAED shows the user's quote vs. **live** Al Ansari, Western Union, Remitly, and Wise quotes (scraped or via affiliate APIs). Always highlight the savings. Builds extreme trust with a UAE expat audience that has been burned by hidden FX margins.
+2. **"Honesty score" - live competitive FX widget.** On the send screen, RailAED shows the user's quote vs. **live** Al Ansari, Western Union, Remitly, and Wise quotes (scraped or via affiliate APIs). Always highlight the savings. Builds extreme trust with a UAE expat audience that has been burned by hidden FX margins.
 
 3. **WhatsApp-native recipient with passkey custody.** Recipient never installs an app, never sees a seed phrase, never sees a hex address. One tap on a WhatsApp link → passkey on their phone → either off-ramp or keep USDC. The "send money home as easily as a WhatsApp voice note" pitch lands hard with judges familiar with the corridor.
 
 ### Circle products integrated (count: 5)
-1. **Arc** — settlement chain
+1. **Arc** - settlement chain
 2. **Circle Wallets** (Modular for consumers, Developer-Controlled for treasury)
 3. **CCTP V2** via **Bridge Kit** (for non-Arc destinations)
 4. **Circle Gateway** (treasury + bulk payroll)
 5. **Nanopayments** (streaming payroll wow feature)
-6. **StableFX** (if access — for PHPC corridor)
+6. **StableFX** (if access - for PHPC corridor)
 
 ### Architecture diagram (text)
 ```
@@ -516,10 +516,10 @@ Per the challenge page and standard Circle hackathon practice `[V]` + `[I]`:
 ## Open questions / known unknowns
 
 1. **Mainnet timing.** Arc mainnet "summer 2026" but not firm. Demo must work on testnet end-to-end and we should *not* depend on mainnet.
-2. **StableFX hackathon access.** Submit `customer-support@circle.com` request with subject "Circle Hackathon - USYC or StableFX testnet request" **immediately** — every day of delay matters.
+2. **StableFX hackathon access.** Submit `customer-support@circle.com` request with subject "Circle Hackathon - USYC or StableFX testnet request" **immediately** - every day of delay matters.
 3. **AED stablecoin in StableFX.** Not currently a partner. May need to integrate AE Coin directly off the Gateway/StableFX path; check AE Coin docs once they exist.
 4. **Bangladesh / Pakistan crypto status.** Pakistan sandbox is promising but limited; Bangladesh remains restrictive. Treat as "demo with simulated off-ramp partner."
-5. **Circle Wallets exact free-tier limits.** Need to confirm at [Circle developer fee schedule](https://help.circle.com/s/article/Developer-platform-fee-schedule?language=en_US) — free for first 1,000 MAW per public snippets, but hackathon volume is well under that.
+5. **Circle Wallets exact free-tier limits.** Need to confirm at [Circle developer fee schedule](https://help.circle.com/s/article/Developer-platform-fee-schedule?language=en_US) - free for first 1,000 MAW per public snippets, but hackathon volume is well under that.
 6. **Hackathon judging weight.** Get clarification on whether Circle Product Feedback is weighted (HackMoney suggests yes); if so, allocate writing time.
 
 ---

@@ -151,7 +151,7 @@ export function HonestyScore({
                 <span className="shrink-0">·</span>
                 <span className="shrink-0">
                   {r.isUs ? (
-                    <span className="text-[color:var(--cream-500)]">—</span>
+                    <span className="text-[color:var(--cream-500)]">-</span>
                   ) : delta < 0 ? (
                     <span className="inline-flex items-center gap-0.5 text-[color:var(--danger)] font-mono">
                       <ArrowDown className="size-3" />

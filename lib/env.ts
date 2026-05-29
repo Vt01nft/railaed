@@ -5,7 +5,7 @@ import 'server-only';
  *
  * Critical: this module is imported transitively by every route handler and
  * server lib. Next.js 16 evaluates the module graph during `next build`
- * (page-data collection) — even routes marked `dynamic = 'force-dynamic'` —
+ * (page-data collection) - even routes marked `dynamic = 'force-dynamic'` -
  * so throwing here breaks production builds whenever any var is missing at
  * build time (which is normal on Vercel before env-var injection is wired).
  *
@@ -17,7 +17,7 @@ import 'server-only';
 /**
  * Build-phase placeholders for vars that are read at module-load time
  * (e.g. viem's `createPublicClient({ transport: http(rpcUrl) })`). These
- * values are never used at runtime — production reads from real env vars.
+ * values are never used at runtime - production reads from real env vars.
  */
 const BUILD_DEFAULTS: Record<string, string> = {
   ARC_RPC_URL: 'https://rpc.testnet.arc.network',

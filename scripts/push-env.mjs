@@ -54,7 +54,7 @@ for (const { key, value } of vars) {
     if (/already exists/i.test(detail)) {
       console.log(`  skip ${key} (already set; re-run with VERCEL_ENV_FORCE=1 to overwrite)`);
     } else {
-      console.log(`  FAIL ${key} — ${detail}`);
+      console.log(`  FAIL ${key} - ${detail}`);
       fail++;
     }
   }

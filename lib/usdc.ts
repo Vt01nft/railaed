@@ -1,4 +1,4 @@
-// USDC on Arc uses 6 decimals — verified on-chain via the contract's
+// USDC on Arc uses 6 decimals - verified on-chain via the contract's
 // decimals() method (the same as USDC on Ethereum / Polygon mainnet).
 // USDC is also the gas token on Arc, paid at this same precision.
 export const USDC_DECIMALS = 6;

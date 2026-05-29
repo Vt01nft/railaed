@@ -13,7 +13,7 @@ import {
   floorUsdc6,
 } from '@/lib/stream';
 
-// Time is read here at module scope, never during a component's render — keeps
+// Time is read here at module scope, never during a component's render - keeps
 // the render pure (React 19 purity rule) while the live clock lives in state.
 function nowMs(): number {
   return Date.now();
@@ -158,7 +158,7 @@ export function PayrollStream({
                 };
               });
             } else {
-              const msg = data.hint ? `${data.error} — ${data.hint}` : (data.error ?? 'settle failed');
+              const msg = data.hint ? `${data.error} - ${data.hint}` : (data.error ?? 'settle failed');
               setAccts((prev) => ({ ...prev, [c.id]: { ...(prev[c.id] ?? emptyAcct()), lastError: msg } }));
             }
           } catch (e) {
@@ -206,7 +206,7 @@ export function PayrollStream({
             <p className="text-sm text-[color:var(--cream-400)] mt-1 max-w-xl">
               Each contractor accrues USDC every second; we flush it on-chain every{' '}
               {Math.round(STREAM_SETTLE_INTERVAL_MS / 1000)}s as a real Arc transfer. One minute of
-              streaming ≈ {txPerMinute || 0} on-chain txs — the workload Circle Nanopayments batches
+              streaming ≈ {txPerMinute || 0} on-chain txs - the workload Circle Nanopayments batches
               gas-free in production.
             </p>
           </div>
@@ -317,7 +317,7 @@ export function PayrollStream({
         )}
 
         <p className="text-[11px] text-[color:var(--cream-500)] leading-relaxed border-t border-[color:var(--border)] pt-3">
-          Testnet demo. Each settlement is a real USDC transfer from the treasury wallet on Arc —
+          Testnet demo. Each settlement is a real USDC transfer from the treasury wallet on Arc -
           verifiable on ArcScan. Production swaps the per-tick transfer for Circle Nanopayments
           (gas-free, sub-cent, batched EIP-3009 settlement), so thousands of contractors can stream
           at once without a transfer-per-tick.

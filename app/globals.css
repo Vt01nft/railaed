@@ -5,19 +5,19 @@
   --background: #0e2b25;
   --foreground: #f5ecd2;
 
-  /* Emerald surfaces — layered greens */
+  /* Emerald surfaces - layered greens */
   --surface:        #143a32;
   --surface-1:      #1a4a40;
   --surface-2:      #205a4e;
   --surface-muted:  #0c2820;
   --surface-deep:   #082019;
 
-  /* Borders — warm gold hairlines */
+  /* Borders - warm gold hairlines */
   --border:         rgba(212, 165, 47, 0.18);
   --border-strong:  rgba(212, 165, 47, 0.40);
   --border-mint:    rgba(126, 212, 176, 0.30);
 
-  /* Brand — warm gold (the wordmark + accents) */
+  /* Brand - warm gold (the wordmark + accents) */
   --gold-300: #f0c34d;
   --gold-400: #e6b03b;
   --gold-500: #d4a52f;
@@ -41,7 +41,7 @@
   --cream-400: #c0b890;
   --cream-500: #8d8868;
 
-  /* Status — kept warm */
+  /* Status - kept warm */
   --success: #7ed4b0;
   --warning: #f0c34d;
   --danger:  #e89175;
@@ -133,7 +133,7 @@ body {
     var(--background);
 }
 
-/* Premium card — emerald surface with thin gold hairline */
+/* Premium card - emerald surface with thin gold hairline */
 .card-luxe {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -143,7 +143,7 @@ body {
     0 30px 60px -30px rgba(0,0,0,0.45);
 }
 
-/* Gradient hairline border — warm */
+/* Gradient hairline border - warm */
 .gradient-border {
   position: relative;
   background: var(--surface);
@@ -163,7 +163,7 @@ body {
   pointer-events: none;
 }
 
-/* Brand wash on text — emerald → mint → gold */
+/* Brand wash on text - emerald → mint → gold */
 .text-brand-gradient {
   background: var(--gradient-brand);
   -webkit-background-clip: text;

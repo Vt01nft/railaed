@@ -1,7 +1,7 @@
 /**
  * Streaming-payroll tuning.
  *
- * Salary accrues every second and is settled on-chain on a short interval —
+ * Salary accrues every second and is settled on-chain on a short interval -
  * each settlement is a real USDC transfer on Arc, so a one-minute stream
  * naturally produces dozens of verifiable on-chain transactions. This is the
  * shape Circle Nanopayments productionises (gas-free, sub-cent, batched
@@ -12,7 +12,7 @@
  * No `server-only` here: the client streaming UI imports these constants too.
  */
 
-/** Demo accrual rate — the canonical "$0.001 / second worked" from RESEARCH.md. */
+/** Demo accrual rate - the canonical "$0.001 / second worked" from RESEARCH.md. */
 export const STREAM_RATE_USDC_PER_SEC = 0.001;
 
 /** How often accrued pay is flushed on-chain. Lower = more txs, more API load. */

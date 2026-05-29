@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'amount rounds to zero' }, { status: 400 });
     }
 
-    // 2. Pick the funding wallet — signed-in user's wallet if they have one,
+    // 2. Pick the funding wallet - signed-in user's wallet if they have one,
     //    otherwise the platform treasury. Verify the chosen wallet has enough
     //    USDC on-chain before we bother provisioning a recipient.
     const session = await readSession();
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     };
     const token = encodeClaimToken(payload);
 
-    // 5. Persist a local record so the UI can list transfers (best-effort —
+    // 5. Persist a local record so the UI can list transfers (best-effort -
     //    Vercel functions are stateless, this is per-container cache only).
     await saveTransfer({
       id: transferId,
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'send failed';
     const hint = /insufficient|balance/i.test(msg)
-      ? "Owner wallet is out of USDC — top up via POST /api/seed/fund."
+      ? "Owner wallet is out of USDC - top up via POST /api/seed/fund."
       : undefined;
     return NextResponse.json({ error: msg, ...(hint ? { hint } : {}) }, { status: 500 });
   }

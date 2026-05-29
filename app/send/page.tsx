@@ -190,7 +190,7 @@ export default function SendPage() {
       }
       if (!res.ok) {
         const detail = data.error ?? `send failed (HTTP ${res.status})`;
-        throw new Error(data.hint ? `${detail} — ${data.hint}` : detail);
+        throw new Error(data.hint ? `${detail} - ${data.hint}` : detail);
       }
       setResult(data as unknown as SendResp);
     } catch (err) {

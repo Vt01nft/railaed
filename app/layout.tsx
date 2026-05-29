@@ -83,7 +83,7 @@ export default function RootLayout({
               </Link>
               {/* Hide on phones via a plain wrapper: Tailwind's `hidden` loses to the
                   unlayered `.pill-outline { display:inline-flex }`, so toggling the pill
-                  directly wouldn't take effect — toggle a wrapper with no custom class. */}
+                  directly wouldn't take effect - toggle a wrapper with no custom class. */}
               <div className="hidden md:block">
                 <Link href="/" className="pill-outline">
                   <span className="text-[color:var(--cream-300)]">Stablecoin Remittance</span>

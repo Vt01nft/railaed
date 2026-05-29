@@ -14,7 +14,7 @@ const Body = z.object({
 /**
  * POST /api/user/login { email }
  *
- * Hackathon-grade "sign in with email" — no password, no magic link.
+ * Hackathon-grade "sign in with email" - no password, no magic link.
  *
  * - First time an email is seen, we provision a fresh Circle Developer-Controlled
  *   Wallet under RailAED's wallet set with refId="railaed:user:<email>".

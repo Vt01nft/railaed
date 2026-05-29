@@ -24,7 +24,7 @@ interface Props {
   kind?: 'all' | 'transfer' | 'payroll';
   /** Compact mode renders fewer columns (good for sidebars). */
   compact?: boolean;
-  /** Refresh every N seconds — pass 0 to disable. */
+  /** Refresh every N seconds - pass 0 to disable. */
   autoRefreshSeconds?: number;
 }
 
@@ -49,7 +49,7 @@ export function HistoryList({ limit = 10, kind = 'all', compact = false, autoRef
   }
 
   useEffect(() => {
-    // Initial fetch + optional polling against Circle's API — the canonical
+    // Initial fetch + optional polling against Circle's API - the canonical
     // "subscribe to an external system" effect.
     // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
     load();

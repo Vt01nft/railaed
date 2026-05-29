@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'settle failed';
     const hint = /insufficient|balance/i.test(msg)
-      ? 'Treasury is out of USDC — top up via POST /api/seed/fund.'
+      ? 'Treasury is out of USDC - top up via POST /api/seed/fund.'
       : undefined;
     return NextResponse.json({ ok: false, error: msg, ...(hint ? { hint } : {}) }, { status: 500 });
   }

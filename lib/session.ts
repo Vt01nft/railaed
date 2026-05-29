@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { cookies } from 'next/headers';
 import { env } from './env';
 
-/** Session cookie payload — tiny so it fits comfortably in 4KB. */
+/** Session cookie payload - tiny so it fits comfortably in 4KB. */
 export interface SessionPayload {
   email: string;
   walletId: string;

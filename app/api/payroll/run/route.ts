@@ -14,7 +14,7 @@ export const maxDuration = 60;
  * for any contractor that doesn't have one yet, then fires a USDC transfer
  * from the platform's owner wallet for each row in parallel.
  *
- * Falls back to the seed contractor list when local state is empty —
+ * Falls back to the seed contractor list when local state is empty -
  * essential on Vercel where each function invocation can land on a
  * different stateless container.
  */
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'payroll failed';
     const hint = /insufficient|balance/i.test(msg)
-      ? "Owner wallet is out of USDC — top up via POST /api/seed/fund."
+      ? "Owner wallet is out of USDC - top up via POST /api/seed/fund."
       : undefined;
     return NextResponse.json({ error: msg, ...(hint ? { hint } : {}) }, { status: 500 });
   }
