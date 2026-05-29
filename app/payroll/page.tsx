@@ -7,6 +7,7 @@ import { Input, Label } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { AddressPill } from '@/components/address-pill';
 import { TxStateBadge } from '@/components/tx-state-badge';
+import { PayrollStream } from '@/components/payroll-stream';
 import { COUNTRIES, CORRIDOR_LIST, type CorridorCode } from '@/lib/corridors';
 import { formatUsd } from '@/lib/usdc';
 
@@ -43,6 +44,7 @@ export default function PayrollPage() {
   const [running, setRunning] = useState(false);
   const [lastRun, setLastRun] = useState<PayrollRun | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<'batch' | 'stream'>('batch');
 
   async function loadContractors() {
     setLoading(true);
@@ -121,6 +123,27 @@ export default function PayrollPage() {
           Each contractor gets their own Circle wallet on Arc. Parallel transfers, settled in seconds, every line traceable on ArcScan.
         </p>
       </header>
+
+      {/* Mode switch: monthly batch vs. per-second streaming. */}
+      <div className="flex justify-center">
+        <div className="inline-flex rounded-full border border-[color:var(--border-strong)] bg-[color:var(--surface-deep)]/40 p-1">
+          {(['batch', 'stream'] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMode(m)}
+              className={[
+                'rounded-full px-4 py-2 text-sm font-medium transition-colors cursor-pointer',
+                mode === m
+                  ? 'bg-[color:var(--gold-500)] text-[color:var(--surface-deep)]'
+                  : 'text-[color:var(--cream-300)] hover:text-[color:var(--cream-200)]',
+              ].join(' ')}
+            >
+              {m === 'batch' ? 'Monthly batch' : 'Live stream'}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div className="w-full sm:w-64">
@@ -295,16 +318,22 @@ export default function PayrollPage() {
 
       {error ? <div className="text-sm text-[color:var(--danger)]">{error}</div> : null}
 
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end">
-        <Button variant="secondary" onClick={() => saveContractors(contractors)} className="sm:w-auto w-full">
-          Save changes
-        </Button>
-        <Button onClick={runPayroll} loading={running} size="lg" variant="gold" disabled={contractors.length === 0} className="sm:w-auto w-full">
-          <Play className="size-4" /> Run payroll · {formatUsd(total)}
-        </Button>
-      </div>
+      {mode === 'batch' ? (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-end">
+            <Button variant="secondary" onClick={() => saveContractors(contractors)} className="sm:w-auto w-full">
+              Save changes
+            </Button>
+            <Button onClick={runPayroll} loading={running} size="lg" variant="gold" disabled={contractors.length === 0} className="sm:w-auto w-full">
+              <Play className="size-4" /> Run payroll · {formatUsd(total)}
+            </Button>
+          </div>
 
-      {lastRun ? <RunReport run={lastRun} /> : null}
+          {lastRun ? <RunReport run={lastRun} /> : null}
+        </>
+      ) : (
+        <PayrollStream contractors={contractors} onProvisioned={loadContractors} />
+      )}
     </div>
   );
 }

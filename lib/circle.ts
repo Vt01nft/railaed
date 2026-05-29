@@ -125,6 +125,7 @@ export async function listOwnerTransactions(limit = 25): Promise<OwnerTransactio
 function classifyRefId(refId?: string): OwnerTransaction['kind'] {
   if (!refId) return 'other';
   if (refId.startsWith('railaed:payroll:')) return 'payroll';
+  if (refId.startsWith('railaed:stream:')) return 'payroll';
   if (refId.startsWith('railaed:transfer:')) return 'transfer';
   if (refId.startsWith('railaed:faucet:')) return 'transfer';
   return 'other';
