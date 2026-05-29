@@ -48,7 +48,7 @@ If the form asks the typical questions, here are pre-written answers — adjust 
 - **Full name:** [your name]
 - **Email:** vt01nfts@gmail.com
 - **Company / project name:** RailAED
-- **Project URL / GitHub:** Source: https://github.com/Vt01nft/railaed · Live: https://railaed-promptforge.vercel.app
+- **Project URL / GitHub:** Source: https://github.com/Vt01nft/railaed · Live: https://railaed-uae.vercel.app
 - **Use case:** Cross-border remittance and global payroll flows for the UAE-expat outbound corridor. AED is converted to USDC on Arc, then routed to the recipient's preferred destination currency. StableFX provides the FX-aware leg of the swap, replacing the off-chain rate oracle in the conceptual MVP.
 - **Which Circle products are you using?** USDC (on Arc), Circle Modular Wallets, CCTP V2 + Bridge Kit, Circle Gateway, Nanopayments, StableFX (requested).
 - **Why StableFX specifically?** It's the only Circle-native rail that handles AED→USD and onward stablecoin-pair routing in a single composable primitive on Arc. Without it the demo must rely on an off-chain rate, which weakens the "everything on Circle rails" story for judges.
