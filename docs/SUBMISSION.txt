@@ -1,0 +1,234 @@
+====================================================================
+RAILAED — STABLECOIN COMMERCE STACK CHALLENGE SUBMISSION
+====================================================================
+
+PROJECT TITLE
+-------------
+RailAED — UAE to Anywhere: stablecoin remittances & global payroll on Arc
+
+ONE-LINE
+--------
+Pay in AED, settle in USDC on Arc, deliver to any corridor in seconds —
+with a live "honesty score" on every quote.
+
+TRACK
+-----
+Track 1 — Best Cross-Border Payments & Remittances Experience (UAE -> Global)
+
+CIRCLE DEVELOPER ACCOUNT EMAIL
+------------------------------
+vt01nfts@gmail.com
+
+LINKS
+-----
+- Working MVP (live demo):  https://railaed-uae.vercel.app
+- Source code (GitHub):     https://github.com/Vt01nft/railaed
+- Documentation (README):   https://github.com/Vt01nft/railaed#readme
+- Product demo video:       [PASTE YOUR VIDEO LINK HERE BEFORE SUBMITTING]
+
+CHAIN
+-----
+Arc testnet (chain id 5042002). Mainnet not live yet (planned summer 2026),
+so everything is built on testnet per the hackathon brief.
+
+STATUS
+------
+Testnet demo, for educational purposes. No production KYC / AED on-ramp /
+real-money settlement is claimed; the production path is documented throughout.
+
+
+====================================================================
+1. DESCRIPTION
+====================================================================
+RailAED is a UAE-first stablecoin remittance and global-payroll app built on
+Circle's Arc testnet. A sender pays in AED; the recipient receives USDC in about
+two seconds, with fees and finality also denominated in USDC (Arc pays gas in
+USDC). Every quote is shown next to a live "honesty score" that compares what
+the recipient would actually get from Al Ansari, LuLu, Wise, Western Union and
+Remitly for the same AED amount.
+
+Each recipient and each payroll contractor gets their own auto-provisioned
+Circle Developer-Controlled Wallet on Arc, claimable through a WhatsApp link —
+no app install, no seed phrase, no hex addresses for the end user. Every wallet
+and every transfer is a real address and a real transaction, auditable on
+ArcScan.
+
+Payroll runs two ways: a one-click monthly batch (parallel USDC transfers to N
+contractors), and a per-second streaming mode where salary accrues live and
+settles on-chain on a short interval — producing dozens of real on-chain
+transactions per minute, the exact workload Circle Nanopayments is designed to
+batch gas-free in production.
+
+
+====================================================================
+2. PROBLEM & WHY IT MATTERS
+====================================================================
+Dubai is the second-largest remittance-sending city in the world. UAE expats
+send billions every year to India, Pakistan, the Philippines, Egypt, Bangladesh,
+Sri Lanka and Nepal — and pay roughly 1.6%-3.7% in opaque, layered FX margins to
+do it, with slow settlement. The major stablecoin remittance products today
+target US / LATAM / Africa corridors. Nobody is building an end-to-end
+UAE-expat-outbound stablecoin product. That is the wedge RailAED takes, on the
+rails Circle and Arc actually shipped.
+
+
+====================================================================
+3. CIRCLE PRODUCTS USED
+====================================================================
+- USDC on Arc
+    Sub-second finality and USDC-denominated gas mean the sender's AED quote can
+    be locked end-to-end with no "tx pending because gas spiked" failure mode.
+
+- Circle Developer-Controlled Wallets
+    Auto-provision a dedicated wallet per recipient and per contractor; senders
+    never explain seed phrases. A passkey/email reveal path (User-Controlled
+    Wallets) is mapped for v2.
+
+- Circle Gateway / treasury (owner-wallet) pattern
+    A single treasury operator wallet fans out to recipients — the operational
+    shape a remittance back-office needs.
+
+- Nanopayments-style streaming payroll (BUILT on Arc today)
+    Per-second salary accrual with real on-chain settlement on each tick.
+    Production swaps the per-tick transfer for Circle Nanopayments (gas-free,
+    sub-cent, batched EIP-3009 settlement). The per-tick transfer is the honest
+    testnet stand-in for that batching.
+
+- StableFX (client seam BUILT; live access requested -- gated)
+    The AED->USDC FX leg flows through a `StableFXClient` interface. Today it is
+    `MockStableFXClient` (a live FX oracle, labelled "simulated" in the UI so the
+    rail is never misrepresented). `LiveStableFXClient` drops in behind the
+    `STABLEFX_ENABLED` flag the moment access + AED pair coverage exist. We
+    emailed Circle Customer Care during the sprint; they confirmed testnet
+    allowlisting is gated to a select group of developers and our submission did
+    not qualify at this stage, so we ship the seam (the hackathon brief does not
+    penalise architecture-level integrations when access is unavailable).
+
+
+====================================================================
+4. WORKING MVP — WHAT YOU CAN DO RIGHT NOW (https://railaed-uae.vercel.app)
+====================================================================
+- Get a quote: enter an AED amount, pick a corridor, see the recipient's USDC +
+  local-currency amount and the live honesty score vs 5 traditional rails.
+- Sign in with an email: provisions a Circle wallet on Arc scoped to that email;
+  one-tap faucet drips 5 testnet USDC from the treasury.
+- Send a remittance: provisions a recipient wallet, transfers USDC on Arc
+  (~3 s), and produces an HMAC-signed WhatsApp claim link.
+- Claim flow: recipient opens the link, sees their on-chain balance (read live
+  from Arc) and a link to ArcScan. No install, no seed phrase.
+- Payroll (batch): one click pays N contractors in parallel, each into their own
+  Circle wallet, all settled in seconds.
+- Payroll (streaming): per-second accrual; each tick settles on-chain on Arc.
+  A one-minute run produces dozens of verifiable on-chain transactions.
+- Health/audit: /api/health reports Arc chain id + block, USDC decimals, wallet
+  balances, and Circle wallet-set status.
+
+
+====================================================================
+5. ARCHITECTURE DIAGRAM
+====================================================================
+
+  BROWSER  — Next.js 16 UI (landing | send | claim | payroll[batch + stream])
+     |  HTTPS
+     v
+  NEXT.JS SERVER on Vercel (Fluid Compute) — API routes
+     |
+     |  /api/quote                  -> fx.ts -> StableFXClient (mock) + honesty score
+     |  /api/send                   -> circle.ts (Dev-Controlled Wallets)
+     |                                 + claim-token.ts (HMAC) + state.ts
+     |  /api/claim/:token           -> claim-token.ts + arc.ts (viem balanceOf)
+     |  /api/payroll/run            -> circle.ts (parallel USDC transfers)
+     |  /api/payroll/stream/start   -> circle.ts (provision contractor wallets)
+     |  /api/payroll/stream/settle  -> circle.ts (per-tick on-chain USDC transfer)
+     |  /api/tx/:id /api/balance/:a /api/history /api/health /api/seed/fund
+     |
+     +--> Circle Developer API   (createWallet, createTransaction, listTransactions)
+     +--> Arc testnet RPC        (rpc.testnet.arc.network) — USDC settlement, gas in USDC
+     +--> open.er-api.com        AED->USD reference rate (behind the StableFX mock)
+
+
+  MONEY FLOW for a single send:
+
+     AED in (UI)
+        |
+        v
+   [/api/send] --- Circle SDK --- createWallet(recipient)
+        |                               |
+        |          new recipient address (Arc testnet)
+        |                               |
+        +--- Circle SDK --- createTransaction(owner -> recipient, USDC, Arc)
+                                        |
+                                        v
+                            Arc testnet (~3 s finality)
+                                        |
+                                        v
+            Claim token (HMAC-SHA256, base64url) -> WhatsApp link
+                                        |
+                                        v
+                      Recipient opens /claim/<token>
+                                        |
+                                        v
+            viem reads recipient.balanceOf(USDC) — proof of receipt
+
+
+====================================================================
+6. KEY FEATURES / DIFFERENTIATORS
+====================================================================
+- Live honesty score on every quote (5 traditional UAE rails, delta in USD).
+- WhatsApp-native claim links — recipients never install an app or see hex.
+- Per-recipient & per-contractor Circle wallets, not a shared escrow pool;
+  every address is auditable on ArcScan.
+- Per-user wallets with one-tap self-fund from the treasury.
+- Streaming payroll: per-second pay with real on-chain settlement (the "wow"
+  demo — dozens of on-chain txs per minute; Nanopayments is the production swap).
+- Honest engineering: the FX leg is labelled "simulated" until the live StableFX
+  rail is granted; nothing is misrepresented to the user or the judges.
+
+
+====================================================================
+7. DOCUMENTATION
+====================================================================
+- README (setup, architecture, env vars, roadmap, Circle product feedback):
+  https://github.com/Vt01nft/railaed#readme
+- Demo script (2.5-min walkthrough): docs/DEMO_SCRIPT.md in the repo
+- Deep research (Arc/Circle facts, regulatory notes): docs/RESEARCH.md
+- StableFX access request + outcome: docs/STABLEFX_REQUEST.md
+- Health/self-check endpoint: https://railaed-uae.vercel.app/api/health
+- Stack: Next.js 16 (App Router) on Vercel, Circle Developer-Controlled Wallets
+  SDK, viem for Arc reads + bootstrap funding, USDC on Arc testnet, zod, Tailwind.
+
+
+====================================================================
+8. CIRCLE PRODUCT FEEDBACK
+====================================================================
+What worked well:
+- The @circle-fin/developer-controlled-wallets SDK is typed end-to-end; the
+  createWallet -> createTransaction -> getTransaction loop is exactly three calls.
+- Arc testnet RPC was reliable: INITIATED -> COMPLETE in ~3 s in every test.
+- USDC-as-gas removed an entire failure mode (no separate native-token faucet).
+- Per-wallet refId let us namespace wallets (railaed:transfer:<uuid>, etc.)
+  without a separate join table.
+
+What could be improved:
+1. Surface real validation errors. createWallets / createTransaction failures
+   return "API parameter invalid" (code 2, status 400) with no message field; we
+   had to bisect (SCA account type is rejected on Arc; a tokenAddress transfer
+   needs an explicit blockchain; long metadata name is rejected). A details/
+   message field would have saved time.
+2. Document Arc wallet account-type compatibility — SCA is in the SDK union type
+   but rejected at runtime on Arc; EOA is the only valid choice today.
+3. Faucet permissions — requestTestnetTokens returned 403 against our owner
+   wallet; we had to bootstrap by transferring USDC from a separately-funded EOA.
+4. USDC decimals on Arc — several docs/posts say 18 decimals; on-chain decimals()
+   returned 6 (same as USDC elsewhere). We discovered this empirically.
+5. SDK enum overlap — TestnetBlockchain vs Blockchain both include ARC-TESTNET;
+   transfers use TokenBlockchain, wallet creation uses Blockchain. Easy foot-gun.
+6. StableFX vs USYC access channel — the prescribed support subject line
+   ("USYC or StableFX testnet request") meant our StableFX ask was handled as a
+   USYC allowlisting request and declined with a USYC template; the StableFX part
+   was never addressed separately. A dedicated StableFX access path would help.
+
+
+====================================================================
+END OF SUBMISSION
+====================================================================
