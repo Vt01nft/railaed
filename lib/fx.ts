@@ -9,34 +9,11 @@
  */
 
 import { COUNTRIES, type CorridorCode } from './corridors';
+import { getStableFXClient, getAedToUsdRate, type SettlementTenor } from './stablefx';
 
-const AED_USD_FALLBACK = 0.2723; // AED is pegged at 3.6725 / USD
-
-let _fxCache: { rate: number; fetchedAt: number } | null = null;
-const FX_TTL_MS = 5 * 60_000;
-
-export async function getAedToUsdRate(): Promise<{ rate: number; cached: boolean; source: string }> {
-  if (_fxCache && Date.now() - _fxCache.fetchedAt < FX_TTL_MS) {
-    return { rate: _fxCache.rate, cached: true, source: 'cache' };
-  }
-  try {
-    const res = await fetch('https://open.er-api.com/v6/latest/AED', {
-      next: { revalidate: 300 },
-      signal: AbortSignal.timeout(3000),
-    });
-    if (res.ok) {
-      const data = (await res.json()) as { rates?: { USD?: number } };
-      const rate = data.rates?.USD;
-      if (typeof rate === 'number' && rate > 0) {
-        _fxCache = { rate, fetchedAt: Date.now() };
-        return { rate, cached: false, source: 'open.er-api.com' };
-      }
-    }
-  } catch {
-    // fall through to fallback
-  }
-  return { rate: AED_USD_FALLBACK, cached: false, source: 'fallback' };
-}
+// The AED→USD oracle now lives in the StableFX seam (it's the FX-leg source).
+// Re-exported here so existing importers (landing data) are unaffected by the move.
+export { getAedToUsdRate };
 
 export interface CompetitorQuote {
   name: string;
@@ -60,17 +37,26 @@ export interface RailAedQuote {
   recipientUsdc: number; // == recipientUsd for testnet (1 USDC = 1 USD)
   settlementSeconds: number;
   destinationLocal: { currency: string; amount: number; rate: number };
+  /** Provenance of the FX leg — which rail produced the AED→USDC rate. */
+  fx: {
+    provider: 'circle-stablefx' | 'mock-stablefx';
+    settlementTenor: SettlementTenor;
+    gated: boolean;
+    rateSource: string;
+  };
 }
 
 const RAILAED_FEE_PCT = 0.003; // 0.3% — leaves room for gas (USDC-denominated on Arc) + margin
 const RAILAED_SETTLEMENT_SECONDS = 2;
 
 export async function quoteRailAed(senderAed: number, corridor: CorridorCode): Promise<RailAedQuote> {
-  const { rate } = await getAedToUsdRate();
   const corridorMeta = COUNTRIES[corridor];
   if (!corridorMeta) {
     throw new Error(`Unknown corridor code: ${corridor}`);
   }
+  // FX leg goes through the StableFX seam (mock today, live rail when granted).
+  const fx = await getStableFXClient().quoteAedToUsdc(senderAed);
+  const rate = fx.rate;
   const baseUsd = senderAed * rate;
   const feeUsd = baseUsd * RAILAED_FEE_PCT;
   const recipientUsd = Math.max(0, baseUsd - feeUsd);
@@ -88,6 +74,12 @@ export async function quoteRailAed(senderAed: number, corridor: CorridorCode): P
       currency: corridorMeta.localCurrency,
       amount: localAmount,
       rate: corridorMeta.usdToLocalRate,
+    },
+    fx: {
+      provider: fx.provider,
+      settlementTenor: fx.settlementTenor,
+      gated: fx.gated,
+      rateSource: fx.rateSource,
     },
   };
 }

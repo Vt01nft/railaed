@@ -25,6 +25,12 @@ interface QuoteResp {
     recipientUsdc: number;
     settlementSeconds: number;
     destinationLocal: { currency: string; amount: number; rate: number };
+    fx?: {
+      provider: 'circle-stablefx' | 'mock-stablefx';
+      settlementTenor: 'instant' | 'hourly' | 'daily';
+      gated: boolean;
+      rateSource: string;
+    };
   };
   honestyScore: {
     railaedRecipientUsd: number;
@@ -358,6 +364,16 @@ export default function SendPage() {
                 <div className="space-y-3 text-sm">
                   <Row label="You send" value={formatAed(quote.quote.senderAed)} mono />
                   <Row label="FX rate" value={`1 AED = ${quote.quote.fxRate.toFixed(4)} USD`} mono />
+                  {quote.quote.fx ? (
+                    <div className="flex items-center justify-between gap-3 -mt-1">
+                      <span className="text-[10px] uppercase tracking-[0.18em] text-[color:var(--cream-500)]">FX rail</span>
+                      <span className="inline-flex items-center gap-1.5 text-[11px] text-[color:var(--cream-400)]">
+                        <span className="size-1.5 rounded-full bg-[color:var(--gold-500)]" />
+                        {quote.quote.fx.provider === 'circle-stablefx' ? 'Circle StableFX' : 'StableFX (simulated)'}
+                        <span className="text-[color:var(--cream-500)]">· {quote.quote.fx.settlementTenor}</span>
+                      </span>
+                    </div>
+                  ) : null}
                   <Row
                     label="RailAED fee"
                     value={`${(quote.quote.railaedFeePct * 100).toFixed(2)}% · ${formatUsd(quote.quote.railaedFeeUsd)}`}
