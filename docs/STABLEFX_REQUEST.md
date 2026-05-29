@@ -8,6 +8,23 @@
 
 ---
 
+## Outcome (2026-05-29)
+
+Sent the request below. Circle Customer Care replied, asked for project details
+(Arc wallet address, links, use case), then declined: allowlisted access is
+"limited to a select group of developers" and our submission "does not qualify
+for access at this stage." Notably the exchange was handled entirely as a **USYC**
+allowlisting request — the **StableFX** ask was never addressed separately, despite
+a follow-up clarifying that StableFX (not USYC) is what RailAED needs.
+
+**Result:** shipping the `StableFXClient` seam (`lib/stablefx.ts`) — `MockStableFXClient`
+by default, `LiveStableFXClient` behind `STABLEFX_ENABLED`, with the rate labelled
+"simulated" in the UI. The real rail is a one-flag swap if access is granted later.
+This matches the hackathon brief, which doesn't penalise conceptual/architecture-level
+integrations when access isn't available.
+
+---
+
 ## Email body (copy + paste, edit anything in `[brackets]`)
 
 ```

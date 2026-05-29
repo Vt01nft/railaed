@@ -267,7 +267,7 @@ railaed/
 
 ## "Wow" features that differentiate
 
-1. **Live honesty score** — every quote shows what 5 traditional UAE rails would charge for the same AED, with `Δ USD` vs RailAED. Fee data is illustrative until the StableFX access request is approved (see `docs/STABLEFX_REQUEST.md`), then it can become a live quote.
+1. **Live honesty score** — every quote shows what 5 traditional UAE rails would charge for the same AED, with `Δ USD` vs RailAED. Competitor fee data is illustrative; the FX leg runs through the `StableFXClient` seam (we requested live access — Circle confirmed it's gated and our submission didn't qualify yet, see `docs/STABLEFX_REQUEST.md`), so it ships labelled "simulated" until the real rail is granted.
 2. **WhatsApp-native claim links** — recipients never install an app or see a hex address. They open a link, see USDC, tap claim. Cards are passkey-ready when we migrate to Modular Wallets.
 3. **Per-recipient Circle wallets, not a shared escrow** — every send and every payroll line provisions a dedicated wallet for the recipient. ArcScan shows a real address you can audit, not an opaque pool.
 4. **Per-user wallets with a one-tap self-fund** — sign in with an email, get a dev-controlled Circle wallet provisioned for you on Arc, drip yourself 5 USDC from the treasury, then send from your own balance. The history feed merges your wallet's txs with the treasury's so you can see your own activity. Migration path to Circle User-Controlled Wallets (PIN/passkey) is mapped in v2.
@@ -305,8 +305,12 @@ building on the stack over a focused sprint:
   failure mode.
 - **Circle Gateway / Owner wallet pattern** — gives us a single treasury operator wallet
   to fan out from, which is exactly the operational shape a remittance back-office needs.
-- **StableFX** *(requested)* — the only way to keep the FX leg on Circle's rails instead
-  of scraping an external rate.
+- **StableFX** *(requested — access gated)* — the only way to keep the FX leg on Circle's
+  rails instead of scraping an external rate. We emailed Circle Customer Care during the
+  sprint; they confirmed testnet allowlisting is limited to a select group of developers
+  and our submission didn't qualify at this stage. So we ship the `StableFXClient` seam
+  (mock by default, `LiveStableFXClient` behind `STABLEFX_ENABLED`) and label the rate
+  "simulated" in the UI — the real rail is a one-flag swap if access lands.
 
 ### What worked well
 
@@ -342,6 +346,11 @@ building on the stack over a focused sprint:
 5. **`TestnetBlockchain` and `Blockchain` overlap.** The SDK has two enums that both
    include `ARC-TESTNET`; transfer endpoints use `TokenBlockchain`, wallet creation
    uses `Blockchain`. Light unification would remove a class of foot-guns.
+6. **StableFX vs USYC access channel.** The hackathon-prescribed support subject line
+   ("USYC or StableFX testnet request") meant our StableFX ask was handled as a USYC
+   allowlisting request and declined with a USYC-specific template — the StableFX part
+   was never addressed separately. A dedicated StableFX access path (or a clear "StableFX
+   is granted/declined separately" note) would remove the ambiguity for hackathon teams.
 
 ### Recommendations to make the developer experience more seamless
 
