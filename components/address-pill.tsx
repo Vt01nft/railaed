@@ -29,7 +29,7 @@ export function AddressPill({
         onClick={copy}
         type="button"
         title="Copy"
-        className="text-[color:var(--cream-500)] hover:text-[color:var(--cream-200)] cursor-pointer rounded-full p-0.5 hover:bg-[color:var(--surface-1)]/60"
+        className="tap-target inline-flex items-center justify-center text-[color:var(--cream-500)] hover:text-[color:var(--cream-200)] cursor-pointer rounded-full p-0.5 hover:bg-[color:var(--surface-1)]/60"
       >
         {copied ? <Check className="size-3.5 text-[color:var(--mint-300)]" /> : <Copy className="size-3.5" />}
       </button>
@@ -38,7 +38,7 @@ export function AddressPill({
         target="_blank"
         rel="noreferrer"
         title="View on ArcScan"
-        className="text-[color:var(--cream-500)] hover:text-[color:var(--cream-200)] rounded-full p-0.5 hover:bg-[color:var(--surface-1)]/60"
+        className="tap-target inline-flex items-center justify-center text-[color:var(--cream-500)] hover:text-[color:var(--cream-200)] rounded-full p-0.5 hover:bg-[color:var(--surface-1)]/60"
       >
         <ExternalLink className="size-3.5" />
       </a>

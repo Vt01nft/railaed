@@ -248,14 +248,18 @@ export function SignInButton() {
 function Modal({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/60 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm safe-px"
       onClick={onClose}
     >
-      <div
-        className="w-full max-w-md rounded-3xl bg-[color:var(--surface)] border border-[color:var(--border-strong)] shadow-2xl p-5 sm:p-7 my-4"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
+      {/* min-h-full + flex centering keeps the top reachable when the modal is
+          taller than the viewport (the grid+place-items-center pattern clips it). */}
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4 py-[max(1rem,env(safe-area-inset-top))]">
+        <div
+          className="w-full max-w-md rounded-3xl bg-[color:var(--surface)] border border-[color:var(--border-strong)] shadow-2xl p-5 sm:p-7"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

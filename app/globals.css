@@ -87,11 +87,31 @@
 
 html, body { height: 100%; }
 
+html {
+  /* Stop iOS from inflating text in landscape, and keep our own scale. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* Safety net: nothing should ever cause a sideways scroll on mobile.
+     `clip` (not `hidden`) avoids creating a scroll container, so
+     position: sticky keeps working. */
+  overflow-x: clip;
+  /* Kill the grey flash on tap for a more app-like feel. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe-area helpers for notched / home-indicator devices (PWA standalone). */
+.safe-pt { padding-top: env(safe-area-inset-top); }
+.safe-pb { padding-bottom: env(safe-area-inset-bottom); }
+.safe-px {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .font-mono {
@@ -171,6 +191,13 @@ body {
 }
 .pill-outline:hover {
   background: rgba(245,236,210,0.04);
+}
+
+/* On touch devices, guarantee comfortable tap targets (Apple HIG ~44px).
+   Scoped to coarse pointers so desktop chips keep their compact height. */
+@media (pointer: coarse) {
+  .pill-outline { min-height: 44px; }
+  .tap-target { min-height: 40px; min-width: 40px; }
 }
 
 /* Subtle scrollbar */

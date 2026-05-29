@@ -62,6 +62,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -73,7 +74,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col brand-grad relative">
-        <header className="absolute top-0 inset-x-0 z-30">
+        <header className="absolute top-0 inset-x-0 z-30 safe-pt safe-px">
           <div className="mx-auto max-w-7xl flex items-center justify-between gap-2 px-4 sm:px-6 py-4 sm:py-5">
             {/* Left: logo (30% larger than xs, slow rotation) + tag pill */}
             <div className="flex items-center gap-3 min-w-0">
@@ -93,8 +94,8 @@ export default function RootLayout({
             </div>
           </div>
         </header>
-        <main className="flex-1 pt-20">{children}</main>
-        <footer className="border-t border-[color:var(--border)] bg-[color:var(--surface-deep)]/40">
+        <main className="flex-1 pt-[calc(5rem+env(safe-area-inset-top))]">{children}</main>
+        <footer className="border-t border-[color:var(--border)] bg-[color:var(--surface-deep)]/40 safe-pb safe-px">
           <div className="mx-auto max-w-7xl px-6 py-5 text-xs text-[color:var(--cream-500)] flex flex-wrap items-center justify-between gap-2">
             <div>
               For the <span className="text-[color:var(--cream-300)]">Stablecoin Commerce Stack Challenge</span> · Track 1 · Testnet demo only.
