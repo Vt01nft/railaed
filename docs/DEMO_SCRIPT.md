@@ -1,4 +1,4 @@
-# RailAED — 2-minute demo script
+# RailAED — ~2.5-minute demo script
 
 Live demo: **https://railaed-uae.vercel.app**
 
@@ -90,7 +90,23 @@ dozens of these and you want every second to land.
 > Each contractor address is a real wallet on a real chain — payroll history is
 > verifiable, not just a CSV in our database."
 
-### 2:05 — Wrap (~5 s)
+### 2:05 — Streaming payroll (~25 s)
+[Flip the toggle at the top of `/payroll` from *Monthly batch* to *Live stream*. Click *Start streaming*.]
+
+> "Same contractors, paid per second worked. Each row ticks up live, and every
+> few seconds we settle the accrued amount on-chain — a real USDC transfer on
+> Arc. Watch the on-chain tx counter climb."
+
+[Let it run ~15 s so the "On-chain txs" stat reaches double digits, then click a contractor's *ArcScan* link to show the stream of incoming transfers.]
+
+> "In one minute this fires dozens of real on-chain transactions — the exact
+> workload Circle Nanopayments batches gas-free in production. The per-second
+> transfer here is the honest testnet stand-in; the production swap is a single
+> client. No traditional payroll rail can pay by the second."
+
+[Click *Stop stream*.]
+
+### 2:30 — Wrap (~5 s)
 > "RailAED. UAE to anywhere, in seconds, on Arc."
 
 [Cut.]

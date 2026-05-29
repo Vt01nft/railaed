@@ -10,7 +10,7 @@ Built for the **[Stablecoin Commerce Stack Challenge](https://challenges.ignyte.
 - **Source:** [github.com/Vt01nft/railaed](https://github.com/Vt01nft/railaed)
 - **Track:** Track 1 — Best Cross-Border Payments & Remittances Experience (UAE → Global)
 - **Circle Developer Account:** `vt01nfts@gmail.com`
-- **Circle products used:** USDC on Arc · Circle Developer-Controlled Wallets · CCTP V2 + Bridge Kit (planned for v2) · Circle Gateway (treasury routing) · Nanopayments (streaming payroll, planned for v2) · StableFX (interface shimmed, access requested)
+- **Circle products used:** USDC on Arc · Circle Developer-Controlled Wallets · Circle Gateway (treasury routing) · Nanopayments-style streaming payroll (real per-tick on-chain settlement on Arc today; Nanopayments batching is the production swap) · StableFX (`StableFXClient` seam built — mock by default, live rail drops in when gated access + AED pairs land) · CCTP V2 + Bridge Kit (planned for v2)
 - **Chain:** Arc testnet (chain id `5042002`)
 - **Status:** Testnet demo only · for educational purposes
 
@@ -42,6 +42,7 @@ A live demo on Arc testnet:
 | Send (no auth) | `POST /api/send` | Anonymous flow still works · provisions recipient wallet + transfers USDC + signs a claim token (~3 s) |
 | Claim | `GET /api/claim/[token]` | HMAC-verified token, on-chain balance check, recipient view with corridor metadata |
 | Payroll batch | `POST /api/payroll/run` | Parallel transfers from the platform wallet → N contractor wallets, all settled in seconds |
+| Payroll stream | `POST /api/payroll/stream/start` + `…/settle` | Per-second salary accrual; each tick is a **real** USDC transfer on Arc, so one minute of streaming produces dozens of on-chain txs. Production swaps the per-tick transfer for Circle Nanopayments (gas-free, batched). |
 | History | `GET /api/history` | Live feed sourced from Circle `listTransactions`; folds in the signed-in user's wallet so users see their own sends · `scope=me` for user-only |
 | Health | `GET /api/health` | Arc RPC chain id + block, USDC decimals, owner & deployer balances, Circle wallet-set status |
 | Seed funding | `POST /api/seed/fund` | Tops up the owner Circle wallet from the deployer EOA via viem (Circle's faucet returns 403 on this wallet — explained below) |
@@ -155,13 +156,14 @@ Server-only (do **not** prefix with `NEXT_PUBLIC_`):
 | `CIRCLE_ENTITY_SECRET` | 32-byte hex; generated once via `generateEntitySecret()` |
 | `CIRCLE_ENTITY_SECRET_CIPHERTEXT` | Encrypted entity secret (registered with Circle) |
 | `CIRCLE_WALLET_SET_ID` | UUID of your wallet set |
-| `CIRCLE_OWNER_WALLET_ID` / `_ADDRESS` | The platform's treasury wallet (sender of all transfers) |
-| `CIRCLE_AGENT_WALLET_ID` / `_ADDRESS` | Optional autonomous-operator wallet (used for scheduled / streaming flows) |
+| `CIRCLE_OWNER_WALLET_ID` / `_ADDRESS` | The platform's treasury wallet (sender of all transfers, including streaming-payroll settlements) |
+| `CIRCLE_AGENT_WALLET_ID` / `_ADDRESS` | Optional autonomous-operator wallet, reserved for future scheduled/agentic flows |
 | `ARC_RPC_URL` | `https://rpc.testnet.arc.network` |
 | `ARC_USDC_ADDRESS` | `0x3600000000000000000000000000000000000000` |
 | `ARC_JOB_ESCROW_ADDRESS` | Reserved for a future milestone-escrow flow |
 | `ARC_DEPLOYER_PRIVATE_KEY` / `ARC_DEPLOYER_ADDRESS` | EOA used by `/api/seed/fund` |
 | `RAILAED_CLAIM_SECRET` | HMAC key for signing claim tokens |
+| `STABLEFX_ENABLED` | `true` selects `LiveStableFXClient`; unset/false uses `MockStableFXClient` (default — gated access not yet granted) |
 
 Public (browser-visible):
 
@@ -269,7 +271,8 @@ railaed/
 2. **WhatsApp-native claim links** — recipients never install an app or see a hex address. They open a link, see USDC, tap claim. Cards are passkey-ready when we migrate to Modular Wallets.
 3. **Per-recipient Circle wallets, not a shared escrow** — every send and every payroll line provisions a dedicated wallet for the recipient. ArcScan shows a real address you can audit, not an opaque pool.
 4. **Per-user wallets with a one-tap self-fund** — sign in with an email, get a dev-controlled Circle wallet provisioned for you on Arc, drip yourself 5 USDC from the treasury, then send from your own balance. The history feed merges your wallet's txs with the treasury's so you can see your own activity. Migration path to Circle User-Controlled Wallets (PIN/passkey) is mapped in v2.
-5. **Streaming payroll mode (planned)** — Nanopayments on Arc lets us settle per-second. The architecture is ready; the worker hook is reserved on the `agent` wallet (`CIRCLE_AGENT_WALLET_ID`).
+5. **Streaming payroll — built and live on Arc** — flip the `/payroll` toggle to *Live stream* and each contractor's salary accrues per second, settling on-chain on a short interval. Every tick is a **real** USDC transfer (verifiable on ArcScan), so a one-minute stream produces dozens of on-chain transactions — exactly the workload Circle **Nanopayments** is designed to batch gas-free in production. The per-tick transfer is the honest testnet stand-in for that batching; the swap is a single client.
+6. **FX leg behind a Circle-native seam** — the AED→USDC rate flows through a `StableFXClient` interface (`lib/stablefx.ts`). Today it's `MockStableFXClient` (a live oracle, labelled "StableFX (simulated)" in the quote so it's never misrepresented); `LiveStableFXClient` drops in the moment gated access and AED pair coverage exist. The quote response carries the FX provider + settlement tenor so the UI tells the truth about which rail produced the number.
 
 ---
 
@@ -277,10 +280,10 @@ railaed/
 
 | Item | Why it's next |
 |------|---------------|
-| Nanopayments-powered streaming payroll | The "wow" demo, naturally produces 50+ on-chain txs in a minute |
+| Nanopayments-batched settlement | Streaming payroll already produces dozens of on-chain txs/min via per-tick transfers; swap the settle leg to Nanopayments for gas-free, sub-cent, batched settlement at scale |
 | Modular Wallets w/ passkeys for recipients | Removes the last vestige of dev-custody from the recipient side |
 | Real off-ramp partner integrations (PDAX, CoinDCX, local exchanges) | Closes the loop AED → USDC → local currency |
-| StableFX wired (replaces `MockStableFXClient`) | Quotes become live; AED ↔ INR/PHP/PKR routing is a single primitive |
+| StableFX live (`LiveStableFXClient` replaces the mock) | Seam already built — flip `STABLEFX_ENABLED` once access + AED↔INR/PHP/PKR pairs land |
 | CCTP V2 + Bridge Kit | Lets the employer top-up USDC from Base/Eth before payroll runs |
 | Production compliance (VARA license, CBUAE PTSR, FATF Travel Rule) | The non-trivial moat — pre-mapped in `docs/RESEARCH.md` |
 
