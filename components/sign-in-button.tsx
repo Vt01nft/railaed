@@ -33,6 +33,10 @@ export function SignInButton() {
   }, []);
 
   useEffect(() => {
+    // Fetching the signed-in user on mount is the legitimate "subscribe to
+    // external system" pattern, even though the new lint rule flags the
+    // setState that lands inside refresh().
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refresh();
   }, [refresh]);
 

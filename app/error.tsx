@@ -9,7 +9,6 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   useEffect(() => {
     // In production we'd ship to Sentry / Datadog here. For the testnet demo,
     // a console.error is fine — the digest is the join key with Vercel logs.
-    // eslint-disable-next-line no-console
     console.error('railaed.error', { digest: error.digest, message: error.message });
   }, [error]);
 

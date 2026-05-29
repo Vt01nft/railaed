@@ -57,8 +57,9 @@ export default function ClaimPage({ params }: { params: Promise<{ token: string 
   }
 
   useEffect(() => {
+    // Fetch claim data (token decode + on-chain balance) on mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   useEffect(() => {

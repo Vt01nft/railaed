@@ -75,6 +75,9 @@ export default function SendPage() {
   // input mid-edit).
   useEffect(() => {
     const newCode = dialCodeFor(corridor);
+    // Sync the dial-code prefix to the chosen corridor, preserving any digits
+    // the user already typed past the prefix.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecipientPhone((prev) => {
       // Find a known dial-code prefix in the current value; if everything
       // after the old prefix is just whitespace, replace; otherwise leave alone.
@@ -87,6 +90,7 @@ export default function SendPage() {
 
   useEffect(() => {
     if (aedNum <= 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setQuote(null);
       return;
     }

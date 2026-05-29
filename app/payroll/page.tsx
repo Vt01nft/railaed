@@ -66,6 +66,8 @@ export default function PayrollPage() {
   }
 
   useEffect(() => {
+    // Load contractors from the API on mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadContractors();
   }, []);
 

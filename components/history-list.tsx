@@ -49,6 +49,9 @@ export function HistoryList({ limit = 10, kind = 'all', compact = false, autoRef
   }
 
   useEffect(() => {
+    // Initial fetch + optional polling against Circle's API — the canonical
+    // "subscribe to an external system" effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
     load();
     if (autoRefreshSeconds > 0) {
       const t = setInterval(load, autoRefreshSeconds * 1000);
